@@ -1,0 +1,329 @@
+/**
+ * İngilizce sözlük.
+ *
+ * Anahtar = uygulamadaki Türkçe metin. Böylece ayrı bir Türkçe sözlük
+ * tutmaya gerek kalmaz ve çevirisi eklenmemiş bir metin sessizce Türkçe
+ * kalır (arayüz bozulmaz).
+ *
+ * {x} yer tutucuları t() ile doldurulur.
+ */
+export const en: Record<string, string> = {
+  // ---- ortak ----
+  Kapat: 'Close',
+  Kaydet: 'Save',
+  Sil: 'Delete',
+  Ekle: 'Add',
+  Tamam: 'Done',
+  Kaldır: 'Remove',
+  Yenile: 'Refresh',
+  Tümü: 'All',
+  Temizle: 'Clear',
+  Bitti: 'Done',
+  Toplam: 'Total',
+  Garson: 'Server',
+  Nakit: 'Cash',
+  Kart: 'Card',
+  Tükendi: 'Sold out',
+  ürün: 'items',
+  kişi: 'guests',
+  Ürünler: 'Items',
+  Yükleniyor: 'Loading',
+
+  // ---- sekmeler ----
+  Masalar: 'Tables',
+  'Gün Sonu': 'Reports',
+  Menü: 'Menu',
+  Ayarlar: 'Settings',
+
+  // ---- giriş / kurulum ----
+  'Adisyon Sistemi': 'Order System',
+  'Cihaz Girişi': 'Device Sign-in',
+  'Bu cihazı işletmeye bağlamak için bir kez giriş yap. Sonrasında uygulama doğrudan açılır ve diğer cihazlarla senkron çalışır.':
+    'Sign in once to connect this device to the business. After that the app opens directly and stays in sync with your other devices.',
+  'İşletme e-postası': 'Business email',
+  Şifre: 'Password',
+  'Cihazı Bağla': 'Connect Device',
+  'Bağlanıyor…': 'Connecting…',
+  'E-posta ve şifre gerekli': 'Email and password required',
+  'E-posta veya şifre hatalı': 'Incorrect email or password',
+  'Giriş yapılamadı: {msg}': 'Sign-in failed: {msg}',
+  'Garson seç': 'Select server',
+  'PIN gir': 'Enter PIN',
+  'Hatalı PIN, tekrar dene': 'Wrong PIN, try again',
+  '‹ Garson değiştir': '‹ Change server',
+
+  // ---- masalar ----
+  'Açık adisyon': 'Open checks',
+  'Açık tutar': 'Open amount',
+  Boş: 'Empty',
+  'İsim / Paket': 'Name / Takeaway',
+  Yeni: 'New',
+  'Yeni Sipariş': 'New Order',
+  Masa: 'Table',
+  İsim: 'Name',
+  Paket: 'Takeaway',
+  'Misafir adı': 'Guest name',
+  'Siparişi Aç': 'Open Order',
+  'Boş masaya dokun → sipariş açılır': 'Tap an empty table to open an order',
+  Misafir: 'Guest',
+
+  // ---- sipariş detayı ----
+  'Henüz ürün yok': 'No items yet',
+  'Aşağıdan ürün ekle': 'Add items below',
+  'Not / ekstra ekle ›': 'Add note / extras ›',
+  '+ Ürün Ekle': '+ Add Item',
+  'Hesabı Kapat': 'Close Check',
+  'Ürün Ekle': 'Add Item',
+  Not: 'Note',
+  'ör. ekmek glutensiz, az pişmiş': 'e.g. gluten-free bread, rare',
+  Ekstralar: 'Extras',
+
+  // ---- ödeme ----
+  'Tüm hesap': 'Full check',
+  'Ürün seç': 'Select items',
+  'Ödenecek ürünler': 'Items to pay',
+  'Tüm ürünler ödendi': 'All items paid',
+  'Adisyon ara toplamı': 'Check subtotal',
+  Ödenen: 'Paid',
+  Seçilen: 'Selected',
+  Kalan: 'Remaining',
+  '{n} ürün ödendi': '{n} items paid',
+  'İndirim / İkram': 'Discount / Comp',
+  Yok: 'None',
+  İkram: 'Comp',
+  '%10 İndirim': '10% Discount',
+  '%15 İndirim': '15% Discount',
+  'Eşit Böl': 'Split Evenly',
+  '{n} kişi': '{n} guests',
+  'Ödeme Tipi': 'Payment Type',
+  'İkram Olarak Kapat': 'Close as Comp',
+  'Seçilenleri Al · {amount}': 'Take Selected · {amount}',
+  'Ödemeyi Al · {amount}': 'Take Payment · {amount}',
+
+  // ---- fiş ----
+  'Hesap kapandı': 'Check closed',
+  'Kısmi ödeme alındı': 'Partial payment taken',
+  'Garson: {name}': 'Server: {name}',
+  Alınan: 'Received',
+  'Adisyon açık kaldı — kalan ürünler ayrıca ödenecek':
+    'Check remains open — remaining items to be paid separately',
+
+  // ---- gün sonu ----
+  Bugün: 'Today',
+  Dün: 'Yesterday',
+  'Bu Hafta': 'This Week',
+  Tarih: 'Date',
+  'GÜNÜN CİROSU': "TODAY'S REVENUE",
+  'DÜNKÜ CİRO': "YESTERDAY'S REVENUE",
+  'HAFTALIK CİRO': 'WEEKLY REVENUE',
+  'SEÇİLİ CİRO': 'SELECTED REVENUE',
+  'Ort. adisyon {amount}': 'Avg. check {amount}',
+  Kapanan: 'Closed',
+  'Aktif masa': 'Active tables',
+  'Ürün adedi': 'Items sold',
+  'Saatlik Yoğunluk': 'Hourly Activity',
+  'Günlük Ciro ({n} gün)': 'Daily Revenue ({n} days)',
+  'En Çok Satanlar': 'Top Sellers',
+  'Bu aralıkta satış yok': 'No sales in this range',
+
+  // ---- adisyon geçmişi ----
+  Adisyonlar: 'Checks',
+  '{n} kayıt': '{n} records',
+  'Yükleniyor…': 'Loading…',
+  'Bu aralıkta kapanmış adisyon yok': 'No closed checks in this range',
+  'düzelt ›': 'correct ›',
+  İPTAL: 'VOID',
+  'Tümünü göster ({n})': 'Show all ({n})',
+  'Daha az göster': 'Show less',
+  Düzeltme: 'Correction',
+  'Yeniden aç (ürünleri düzenle)': 'Reopen (edit items)',
+  'İptal sebebi': 'Void reason',
+  'ör. yanlış masaya girildi': 'e.g. entered on wrong table',
+  'İptal et (ciro dışına çıkar)': 'Void (exclude from revenue)',
+  'Kalıcı olarak sil': 'Delete permanently',
+  'İPTAL EDİLDİ': 'VOIDED',
+  'Adisyon yeniden açılacak ve ödemesi geri alınacak. Ürünleri değiştirip tekrar kapatabilirsin. Devam edilsin mi?':
+    'The check will reopen and its payment will be reversed. You can edit items and close it again. Continue?',
+  'Bu adisyon veritabanından KALICI olarak silinecek. Ciro geçmişinden tamamen kaybolur ve geri alınamaz.\n\nİz kalması için "İptal et" önerilir. Yine de silinsin mi?':
+    'This check will be PERMANENTLY deleted from the database. It disappears from revenue history and cannot be recovered.\n\n"Void" is recommended so a record remains. Delete anyway?',
+
+  // ---- menü ----
+  'Menü Yönetimi': 'Menu Management',
+  '+ Ürün': '+ Item',
+  Malzemeler: 'Ingredients',
+  'Ürün yok': 'No items',
+  'Yeni kategori adı': 'New category name',
+  'Yeni Ürün': 'New Item',
+  'Ürünü Düzenle': 'Edit Item',
+  'Ürün adı': 'Item name',
+  'Fiyat (TL)': 'Price (TL)',
+  Kategori: 'Category',
+  Açıklama: 'Description',
+  'Tükendi işaretle': 'Mark as sold out',
+  '✓ Tükendi olarak işaretli': '✓ Marked as sold out',
+  'Reçete (içindekiler)': 'Recipe (ingredients)',
+
+  // ---- malzeme & reçete ----
+  'Birim maliyeti gir, ürün reçetesine ekle — ürün maliyeti ve kâr marjı otomatik hesaplansın.':
+    'Enter a unit cost and add it to a recipe — item cost and profit margin are calculated automatically.',
+  '+ Malzeme': '+ Ingredient',
+  'Henüz malzeme yok. "+ Malzeme" ile başla.': 'No ingredients yet. Start with "+ Ingredient".',
+  'Malzemeyi Düzenle': 'Edit Ingredient',
+  'Yeni Malzeme': 'New Ingredient',
+  'Malzeme adı': 'Ingredient name',
+  'ör. Mozzarella': 'e.g. Mozzarella',
+  Birim: 'Unit',
+  gram: 'gram',
+  mililitre: 'millilitre',
+  adet: 'piece',
+  'Birim maliyet (TL)': 'Unit cost (TL)',
+  'Alerjenler (virgülle ayır)': 'Allergens (comma separated)',
+  Hesapla: 'Calculate',
+  miktar: 'qty',
+  'Malzeme seç…': 'Select ingredient…',
+  'Reçete girilmemiş': 'No recipe entered',
+  Maliyet: 'Cost',
+  'Kâr marjı': 'Profit margin',
+  'Toplu alımdan hesapla:': 'Calculate from bulk purchase:',
+  'kaç adet': 'how many pieces',
+  'kaç {unit}': 'how many {unit}',
+  'kaça geldi?': 'and what did it cost?',
+
+  // ---- ayarlar ----
+  Görünüm: 'Appearance',
+  '☀ Gündüz': '☀ Light',
+  '☾ Gece': '☾ Dark',
+  Dil: 'Language',
+  Garsonlar: 'Servers',
+  AKTİF: 'ACTIVE',
+  'Garson adı': 'Server name',
+  '+ Masa': '+ Table',
+  'Masa yok': 'No tables',
+  'Çoklu cihaz': 'Multi-device',
+  '● Bağlı': '● Connected',
+  'Eşitleniyor…': 'Syncing…',
+  'Siparişler buluta kaydedilir ve tüm cihazlarda (telefon, tablet, PC, mutfak ekranı) anında görünür.':
+    'Orders are saved to the cloud and appear instantly on every device (phone, tablet, PC, kitchen display).',
+  'Şimdi eşitle': 'Sync now',
+  'Oturumu Kilitle / Garson Değiştir': 'Lock / Change Server',
+  Veri: 'Data',
+  'Siparişleri temizle': 'Clear orders',
+  'Cihaz bağlantısını kes': 'Disconnect device',
+  'TÜM cihazlardaki siparişler ve gün sonu geçmişi silinecek. Menü ve garsonlar korunur. Devam edilsin mi?':
+    'Orders and report history will be deleted on ALL devices. Menu and servers are kept. Continue?',
+  'Bu cihazın işletme bağlantısı kesilecek. Tekrar kullanmak için e-posta ve şifre gerekir. Devam edilsin mi?':
+    'This device will be disconnected from the business. Email and password will be required to use it again. Continue?',
+
+  // ---- mutfak ekranı ----
+  Mutfak: 'Kitchen',
+  Bar: 'Bar',
+  '{n} açık sipariş': '{n} open orders',
+  Bekleyen: 'Pending',
+  'Bekleyen sipariş yok': 'No pending orders',
+  'Yeni siparişler buraya otomatik düşer': 'New orders appear here automatically',
+  Bekliyor: 'Waiting',
+  Hazırlanıyor: 'Preparing',
+  Hazır: 'Ready',
+  'Servis edildi': 'Served',
+  'Tümü Hazır': 'All Ready',
+  'dokun → {status}': 'tap → {status}',
+  İçindekiler: 'Ingredients',
+  '{n} dk': '{n} min',
+  'Reçete girilmemiş — Menü sekmesinden ekleyebilirsin':
+    'No recipe entered — you can add one from the Menu tab',
+
+  // ---- bildirimler ----
+  'Sipariş boş': 'Order is empty',
+  'Ödeme tipi seç': 'Select payment type',
+  'Ödenecek ürün yok': 'Nothing left to pay',
+  'Ödenecek ürün seç': 'Select items to pay',
+  'Adisyon silindi': 'Check deleted',
+  'Siparişler temizlendi': 'Orders cleared',
+  'Garson adı gerekli': 'Server name required',
+  'PIN 4 haneli olmalı': 'PIN must be 4 digits',
+  'Bu garson zaten var': 'This server already exists',
+  'Garson eklendi': 'Server added',
+  'Garson silindi': 'Server deleted',
+  'En az bir garson olmalı': 'At least one server is required',
+  'Ürün adı gerekli': 'Item name required',
+  Kaydedildi: 'Saved',
+  'Ürün silindi': 'Item deleted',
+  'Kategori eklendi': 'Category added',
+  'Masa adı boş olamaz': 'Table name cannot be empty',
+  'Masa eklendi': 'Table added',
+  'Masa silindi': 'Table deleted',
+  'Bu masada açık adisyon var': 'This table has an open check',
+  'Adisyon iptal edildi': 'Check voided',
+  'Adisyon yeniden açıldı': 'Check reopened',
+  'Adisyon kalıcı olarak silindi': 'Check permanently deleted',
+  'Malzeme kaydedildi': 'Ingredient saved',
+  'Malzeme silindi': 'Ingredient deleted',
+  'Malzeme adı gerekli': 'Ingredient name required',
+  'Malzeme seç': 'Select an ingredient',
+  'Miktar gir': 'Enter a quantity',
+  'Miktar ve tutar gir': 'Enter quantity and amount',
+  'İptal sebebi yaz': 'Write a void reason',
+
+  // ---- bildirimler (sipariş durumu) ----
+  'Yeni sipariş': 'New order',
+  'Sipariş hazır': 'Order ready',
+  '{where} · {n} ürün mutfağa düştü': '{where} · {n} items sent to kitchen',
+  '{where} · {n} ürün hazır': '{where} · {n} items ready',
+  Bildirimler: 'Notifications',
+  'Sipariş hazır olduğunda sesli ve ekranda uyarı al. Uygulama arka plandayken telefona bildirim düşmesi için izin ver.':
+    'Get a sound and on-screen alert when an order is ready. Allow notifications so alerts reach your phone while the app is in the background.',
+  'Bildirimlere izin ver': 'Allow notifications',
+  'Bildirimler açık': 'Notifications on',
+  'Bildirimler engellenmiş — tarayıcı ayarlarından açabilirsin':
+    'Notifications blocked — you can enable them in browser settings',
+
+  '{n} ürün': '{n} items',
+  'ör. 12,50': 'e.g. 12.50',
+  'Süt, Gluten': 'Milk, Gluten',
+  'Yeniden aç: ürünleri değiştirip tekrar kapatmak için.': 'Reopen: to change items and close again.',
+  'İptal et: hatalı hesabı ciro dışına çıkarır, kayıt izlenebilir kalır.':
+    'Void: removes a wrong check from revenue while keeping an auditable record.',
+  'Kalıcı sil: kaydı tamamen yok eder — geri alınamaz.': 'Delete permanently: removes the record entirely — cannot be undone.',
+  'Reçete girmek için önce Menü → Malzemeler bölümünden malzeme eklemelisin.':
+    'To add a recipe, first create ingredients under Menu → Ingredients.',
+  'Gerçek kullanıma başlarken deneme siparişlerini temizle — menün ve garsonların korunur, sadece siparişler ve gün sonu geçmişi sıfırlanır. Bu işlem tüm cihazları etkiler.':
+    'Clear test orders before going live — your menu and servers are kept; only orders and report history are reset. This affects all devices.',
+
+  'Teslim Et': 'Deliver',
+  'Teslim edildi': 'Delivered',
+  'Tümünü Teslim Et': 'Deliver All',
+
+  'Bu ayarlar yalnızca bu cihazı etkiler.': 'These settings affect this device only.',
+
+  'Fişi Yazdır': 'Print Receipt',
+  'Ara toplam': 'Subtotal',
+  İndirim: 'Discount',
+  'Kısmi ödeme': 'Partial payment',
+  'Teşekkür ederiz': 'Thank you',
+
+  'Cihaz bağlandı': 'Device connected',
+  "Sipariş hazır olduğunda haberdar olmak için bildirimlere izin ver. Bunu sonradan Ayarlar'dan da açıp kapatabilirsin.":
+    'Allow notifications to be alerted when an order is ready. You can turn this on or off later in Settings.',
+  'Devam Et': 'Continue',
+  'Bekleniyor…': 'Waiting…',
+  Açık: 'On',
+  Kapalı: 'Off',
+  'Bildirimler için uygulamayı önce ana ekrana ekle, sonra ana ekrandaki ikondan aç.':
+    'To use notifications, add the app to your home screen first, then open it from that icon.',
+  'Bu tarayıcı bildirimleri desteklemiyor. Sesli uyarı yine de çalışır.':
+    'This browser does not support notifications. Sound alerts still work.',
+
+  Servis: 'Service',
+  Yönetim: 'Management',
+  Yakında: 'Soon',
+  'Yönetim Sistemi': 'Management System',
+  'Sipariş alma, masa takibi, ödeme ve gün sonu': 'Take orders, track tables, payments and daily reports',
+  'Hazırlık ekranı — gelen siparişler ve durumları': 'Prep display — incoming orders and their status',
+  'Kârlılık, menü analizi ve maliyet raporları': 'Profitability, menu analysis and cost reports',
+  'Kullandığın bölümü açıp "Ana Ekrana Ekle" dersen ayrı bir uygulama olarak kurulur.':
+    'Open the section you use and choose "Add to Home Screen" to install it as its own app.',
+
+  Ödendi: 'Paid',
+
+  'Ödenecek adet': 'Qty to pay',
+};

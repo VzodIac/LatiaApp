@@ -1,0 +1,149 @@
+/* ===== Global reset & taban stiller ===== */
+
+* {
+  box-sizing: border-box;
+  -webkit-tap-highlight-color: transparent;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', system-ui, sans-serif;
+  color: #1c3e77;
+  background: #dfe3ea;
+  overscroll-behavior: none;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+  color: inherit;
+  padding: 0;
+}
+
+input,
+textarea,
+select {
+  font-family: inherit;
+}
+
+/* Scrollbar gizle */
+.scr::-webkit-scrollbar {
+  display: none;
+}
+.scr {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* ---- Telefon çerçevesi (masaüstü önizleme) ---- */
+.stage {
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 34px 20px;
+  background: var(--bg);
+  transition: background 0.3s;
+}
+
+.phone {
+  width: 390px;
+  height: 844px;
+  background: #0a0a0a;
+  border-radius: 52px;
+  padding: 12px;
+  box-shadow: 0 40px 90px rgba(20, 30, 60, 0.28), 0 0 0 2px rgba(255, 255, 255, 0.04) inset;
+  flex: none;
+}
+
+.screen {
+  width: 100%;
+  height: 100%;
+  border-radius: 42px;
+  overflow: hidden;
+  position: relative;
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+}
+
+/* ---- Gerçek telefonda (dar ekran / PWA) tam ekran ---- */
+@media (max-width: 480px) {
+  .stage {
+    padding: 0;
+    align-items: stretch;
+  }
+  .phone {
+    width: 100%;
+    height: 100dvh;
+    border-radius: 0;
+    padding: 0;
+    box-shadow: none;
+  }
+  .screen {
+    border-radius: 0;
+    /* iOS safe-area (çentik / alt çubuk) */
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  /* Gerçek cihazda taklit durum çubuğunu gizle */
+  .fake-statusbar {
+    display: none !important;
+  }
+}
+
+
+/* ---- Mutfak ekranı (KDS) ----
+   Yatayda geniş başlık tek satıra sığar; dikeyde (tablet portre, telefon)
+   sağa taşmaması için satırlara bölünür. */
+.kds-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  flex-wrap: wrap;
+  padding: 14px 20px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface);
+}
+
+.kds-spacer {
+  flex: 1;
+}
+
+.kds-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 14px;
+  align-items: start;
+}
+
+@media (max-width: 720px) {
+  .kds-header {
+    gap: 10px;
+    padding: 12px 14px;
+  }
+  /* Dar ekranda boşluk bırakan esnek alan satırı bozar */
+  .kds-spacer {
+    flex-basis: 100%;
+    height: 0;
+  }
+  .kds-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+}
+
+@media (max-width: 420px) {
+  .kds-grid {
+    gap: 8px;
+  }
+}

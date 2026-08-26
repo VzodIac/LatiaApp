@@ -1,0 +1,12 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "latia-dev",
+      "runtimeExecutable": "/usr/local/bin/node",
+      "runtimeArgs": ["node_modules/vite/bin/vite.js", "--host", "--port", "5174", "--strictPort"],
+      "port": 5174,
+      "autoPort": false
+    }
+  ]
+}

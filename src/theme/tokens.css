@@ -1,0 +1,58 @@
+/* ===== La Tía tasarım dili — logodan türetilen renk paleti ===== */
+
+/* Marka logosu bir font değil, gerçek el yazısı logonun maskesidir —
+   bkz. src/components/Logo.tsx ve scripts/gen-brand.mjs */
+
+/* Açık tema (varsayılan) */
+.app,
+.app.light {
+  --bg: #f7f2ec;
+  --surface: #ffffff;
+  --surface2: #f1e8de;
+  --line: #e3d6c7;
+  --fg: #2e2521;
+  --fg2: #6b5d54;
+  --muted: #a2938a;
+  --accent: #aa2632;
+  --coral: #c4763e;
+  --good: #4f7a52;
+  --danger: #b03a2e;
+  --tab: #ffffffee;
+  --sb: #2e2521;
+  --shadow: 0 1px 3px rgba(46, 37, 33, 0.08);
+}
+
+/* Koyu tema */
+.app.dark {
+  --bg: #1a1513;
+  --surface: #241d1a;
+  --surface2: #2e2521;
+  --line: #3d322c;
+  --fg: #f2e9e1;
+  --fg2: #b9a79a;
+  --muted: #7a6a5f;
+  --accent: #d9505e;
+  --coral: #d98e5a;
+  --good: #6fa173;
+  --danger: #d9614f;
+  --tab: #1a1513ee;
+  --sb: #f2e9e1;
+  --shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+@keyframes sheetUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes toastIn {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+@keyframes pop {
+  from { transform: scale(0.96); opacity: 0.4; }
+  to { transform: scale(1); opacity: 1; }
+}
