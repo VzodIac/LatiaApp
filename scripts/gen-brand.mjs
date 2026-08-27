@@ -71,10 +71,10 @@ await maskToPng(await inkMask({}, 420), resolve(pub, 'logo-full.png'));
 await maskToPng(await inkMask({ topRatio: 0.46, heightRatio: 0.54 }, 260), resolve(pub, 'logo-word.png'));
 
 /** Uygulama ikonu: zemin üzerine kelime logosu */
-async function icon(size, { bg, fg, radius, widthRatio = 0.78, maskable = false }, out) {
+async function icon(size, { bg, fg, radius, widthRatio = 0.68, maskable = false }, out) {
   const corner = radius ?? (maskable ? 0 : Math.round(size * 0.22));
   const bgSvg = `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}"><rect width="${size}" height="${size}" rx="${corner}" fill="${bg}"/></svg>`;
-  const wordW = Math.round(size * (maskable ? 0.62 : widthRatio));
+  const wordW = Math.round(size * (maskable ? 0.54 : widthRatio));
   let m = await inkMask({ topRatio: 0.46, heightRatio: 0.54 }, 300);
   m = await sharp(m).resize({ width: wordW, kernel: 'lanczos3' }).toColourspace('b-w').png().toBuffer();
   const mm = await sharp(m).metadata();
@@ -91,7 +91,7 @@ await icon(192, { bg: BRAND, fg: IVORY }, resolve(iconDir, 'icon-192.png'));
 await icon(512, { bg: BRAND, fg: IVORY }, resolve(iconDir, 'icon-512.png'));
 await icon(512, { bg: BRAND, fg: IVORY, maskable: true }, resolve(iconDir, 'icon-512-maskable.png'));
 await icon(180, { bg: BRAND, fg: IVORY, radius: 0 }, resolve(pub, 'apple-touch-icon.png'));
-await icon(64, { bg: BRAND, fg: IVORY, radius: 14, widthRatio: 0.84 }, resolve(pub, 'favicon.png'));
+await icon(64, { bg: BRAND, fg: IVORY, radius: 14, widthRatio: 0.78 }, resolve(pub, 'favicon.png'));
 
 // Mutfak: ters renk — ana ekranda karışmasın
 await icon(192, { bg: IVORY, fg: BRAND }, resolve(iconDir, 'kitchen-192.png'));
