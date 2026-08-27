@@ -56,7 +56,7 @@ Artık uygulamayı bu ikondan aç. İnternet olmadan da açılır ve çalışır
 
 ## 5. Menünü güncelle
 
-Uygulama **dünya mutfağı şablonuyla** kurulu gelir — bu yalnızca bir başlangıç noktasıdır, La Tía'nın gerçek menüsüyle değiştirilmesi beklenir.
+Uygulama **dünya mutfağı şablonuyla** kurulu gelir — bu yalnızca bir başlangıç noktasıdır, La Tía'nın gerçek menüsüyle değiştirilmesi beklenir. Around'un kahvaltı menüsüyle hiçbir ilgisi yoktur; iki işletmenin menüleri tamamen ayrıdır.
 
 Başlangıç kategorileri:
 
@@ -64,7 +64,7 @@ Başlangıç kategorileri:
 |---|---|---|
 | **Başlangıç** | Mutfak | Çorba, bruschetta, salata, nachos… |
 | **Ana Yemek** | Mutfak | Burger, pizza, makarna, wrap, somon… |
-| **Ekstra** | Mutfak | Tek başına satılan yan ürünler |
+| **Ekstra** | Mutfak | Porsiyon yan ürünler ve soslar |
 | **Tatlı** | Mutfak | Cheesecake, brownie, tiramisu, künefe |
 | **İçecek** | Bar | Kahveler, çaylar, soğuk içecekler |
 
@@ -79,8 +79,8 @@ Menü buluta kaydedilir; değişiklik **tüm cihazlarda** anında görünür.
 
 İki ayrı ekstra türü vardır, ikisi de kullanılabilir:
 
-1. **Yan ürün olarak** — "Ekstra" kategorisindeki kalemler (Patates Kızartması, Sarımsaklı Ekmek, Cheddar Sos, Ekstra Köfte, Avokado, Ekstra Peynir) menüden **tek başına** siparişe eklenir.
-2. **Ürüne iliştirilerek** — **Ana Yemek** kategorisindeki bir ürüne dokunup ("Not / ekstra ekle") o ürüne özel ekstraları **adet vererek** seçersin: Ekstra Peynir, Ekstra Köfte, Çift Bacon, Avokado, Glutensiz Ekmek, Acılı Sos. Bunlar mutfak fişinde ürünün altında görünür ve hesapta ayrı satır olarak yazılır.
+1. **Yan ürün olarak** — **Ekstra** kategorisindeki kalemler menüden **tek başına** siparişe eklenir. Porsiyonlar (Patates Kızartması, Tatlı Patates, Soğan Halkası, Sarımsaklı Ekmek, Mevsim Salata, Izgara Sebze), protein ilaveleri (Ekstra Köfte, Izgara Tavuk, Bacon) ve soslar (Guacamole, Cheddar Sos, Trüf Mayonez) burada.
+2. **Ürüne iliştirilerek** — **Ana Yemek** kategorisindeki bir ürüne dokunup ("Not / ekstra ekle") o ürüne özel ekstraları **adet vererek** seçersin: Ekstra Cheddar, Ekstra Köfte, Izgara Tavuk, Çift Bacon, Avokado, Karamelize Soğan, Jalapeño, Trüf Mayonez, Glutensiz Ekmek. Bunlar mutfak fişinde ürünün altında görünür ve hesapta ayrı satır olarak yazılır.
 
 Hangi kategorinin ürüne ekstra iliştirmeye izin verdiği kategori ayarındadır — şu an bu yalnızca **Ana Yemek** için açıktır.
 
