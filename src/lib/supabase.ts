@@ -3,17 +3,16 @@ import { createClient } from '@supabase/supabase-js';
 /**
  * Supabase istemcisi.
  *
- * ⚠️ KURULUM GEREKLİ: Aşağıdaki iki değeri La Tía'nın kendi Supabase
- * projesinden alıp doldurun (Project Settings → API). Her işletmenin
- * veritabanı ayrıdır; başka bir projenin bilgileri buraya yazılmamalıdır.
+ * La Tía'nın kendi Supabase projesine bağlıdır — Around'un veritabanıyla
+ * hiçbir ilgisi yoktur. Her işletmenin veritabanı ayrıdır.
  *
  * Buradaki "publishable" anahtar tarayıcıda çalışmak üzere tasarlanmıştır ve
  * derlenen JS içinde zaten görünür. Veriyi koruyan şey bu anahtar değil,
  * veritabanındaki RLS kurallarıdır: giriş yapmamış hiçbir istek veri
  * okuyamaz/yazamaz.
  */
-const RAW_URL = import.meta.env.VITE_SUPABASE_URL ?? '';
-const RAW_KEY = import.meta.env.VITE_SUPABASE_KEY ?? '';
+const RAW_URL = import.meta.env.VITE_SUPABASE_URL ?? 'https://rmoswcyylususkyeumxd.supabase.co';
+const RAW_KEY = import.meta.env.VITE_SUPABASE_KEY ?? 'sb_publishable_zRx987QZfkImTx6YxISaqg_NhaxCK-6';
 
 /** Bağlantı bilgileri girilmiş mi — girilmemişse uygulama kurulum ekranı gösterir */
 export const isConfigured = /^https:\/\/.+\.supabase\.co\/?$/.test(RAW_URL) && RAW_KEY.length > 20;
