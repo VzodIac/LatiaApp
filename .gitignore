@@ -26,3 +26,6 @@ Thumbs.db
 .vscode/*
 !.vscode/extensions.json
 .idea/
+
+# OCR varlıkları derleme sırasında node_modules'tan üretilir
+public/ocr/

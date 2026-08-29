@@ -127,7 +127,15 @@ Dört bölümü var:
 
 **Alımlar** — Önce **📷 Fiş fotoğrafı çek** ile fişi çek (telefonda doğrudan kamera açılır), sonra malzeme, miktar, ödenen toplam, tedarikçi, fatura/fiş no ve tarihi gir. Kaydetmeden önce **hesaplanan birim maliyeti** gösterir; kilo yerine gram girmek gibi hatalar burada yakalanır.
 
-> Fiş, alım kaydına iliştirilip arşivlenir; listeden **📷 Fiş** bağlantısıyla açabilirsin. **Fişten bilgileri otomatik okuma henüz devrede değil** — tutarları şimdilik elle giriyorsun. Fotoğrafın şimdiden saklanmasının sebebi şu: okuma devreye girdiğinde geçmiş fişler de işlenebilir, bu arada belge kayıt altında kalır.
+Fotoğrafı çektikten sonra **🔍 Fişten oku** düğmesine bas: uygulama fişi okuyup **tutar, tarih, belge no ve tedarikçi** alanlarını doldurur. Yalnızca boş alanlar doldurulur — elle yazdığın bir değer ezilmez.
+
+> **Okuma tamamen telefonda yapılır; fotoğraf hiçbir sunucuya gönderilmez.** İlk okumada yaklaşık 5 MB'lık dil modeli iner ve telefonda saklanır, sonrakiler anında başlar.
+>
+> ⚠️ Termal fişte hata payı vardır — soluk baskı, kıvrım ve dar yazı hata üretir. Okunan değerleri **mutlaka kontrol et**. Uygulama okuma güvenini yüzde olarak gösterir; "toplam" etiketi bulunamazsa fişteki en büyük tutarı alır ve bunu ayrıca söyler.
+>
+> Fişteki **ürün satırları okunmaz** — bu yolla güvenilir çalışmıyor, o yüzden denenmiyor. Malzeme ve miktarı sen seçiyorsun.
+
+Fiş, alım kaydına iliştirilip arşivlenir; listeden **📷 Fiş** bağlantısıyla açabilirsin.
 
 Alım kaydedilince malzemenin birim maliyeti güncellenir, fiyat geçmişine yazılır ve reçeteler üzerinden ürün maliyetlerine yayılır. **Geçmiş bozulmaz:** satılmış ürünlerin maliyeti satış anında dondurulduğu için eski kârlılık aynı kalır, yeni fiyat yalnızca bundan sonraki satışlara yansır.
 
@@ -229,7 +237,7 @@ Garson ve mutfak birbirini canlı görür:
 - 📶 Uygulama çalışmak için internet ister. Bağlantı koptuğunda **Ayarlar → Şimdi eşitle** ile tekrar bağlanabilirsin.
 - 🔒 Güvenlik için başlangıç PIN'lerini kendi belirlediğin PIN'lerle değiştirmen önerilir. Bir cihaz kaybolursa **Ayarlar → Cihaz bağlantısını kes** ile o cihazın erişimini kapat.
 - 🔄 **Güncellemeler otomatik gelir.** Uygulamayı her açtığında en güncel sürüm yüklenir.
-- 🏷️ Kullandığın **sürümü** görmek için: **Ayarlar** sekmesinin en altı (ör. `v0.4.0`).
+- 🏷️ Kullandığın **sürümü** görmek için: **Ayarlar** sekmesinin en altı (ör. `v0.5.0`).
 - 🧭 Sistem dört bölümden oluşur: **Servis** (`/servis`), **Mutfak** (`/kitchen`), **Yönetim** (`/yonetim`) ve bölüm seçimi (kök adres). Her biri ayrı ayrı ana ekrana eklenebilir.
 
 ---

@@ -96,7 +96,7 @@ bahşiş (havuz), rezervasyon ve alım girişi karşılandı. Kalan uçlar aşa�
 | **Giriş akışı** | Açılışta garson sorulması personel devri yüksek ekipte zahmetli | Cihaz oturumu açık kalmalı, uygulama Masalar'a düşmeli, garson **ilk ürün eklenirken** seçilmeli. Atıf korunmalı — ikram sorumluluğu ve garson raporu buna dayanıyor |
 | **Vardiya takibi (bahşiş için)** | Havuz sektörde çalışılan saate göre bölünür; şu an adisyon sayısı yaklaşık ölçü | `shifts` tablosu duruyor, açılış/kapanış girişi yapılmalı |
 | **POS bahşiş mutabakatı** | Uygulama yalnızca *girilen* bahşişi bilir; kartlı tahsilat POS tarafında | Hangi POS/banka? Ekstre karşılaştırması elle mi yapılacak? |
-| **Fişten otomatik okuma** | Fiş fotoğrafı çekilip arşivleniyor ama tutarlar elle giriliyor | İki yol var: (a) görüntü anlayan bir model — anahtar tarayıcıda duramaz, sunucu tarafı proxy + aylık ücret gerekir; (b) cihaz üstü OCR — bağımlılık büyük, termal fişte Türkçe doğruluğu düşük. Hangisi? |
+| **Fiş satırı → malzeme eşleştirme** | OCR toplam/tarih/belge no/tedarikçi okuyor ama satır satır ürünleri okumuyor — termal fişte güvenilir değil | Tedarikçi-ürün sözlüğü kurulmalı; aynı sözlük e-fatura entegrasyonunda da kullanılacak |
 | **e-Fatura entegrasyonu** | Alım girişi manuel çalışıyor; otomatik çekim sıradaki adım | Hangi muhasebe programı/entegratör? Asıl iş fatura satırını malzemeye eşleştiren tedarikçi-ürün sözlüğü |
 | **Sabit gider takibi** | Kârlılık şu an *net kâr = ciro − ikram − ürün maliyeti*; kira, maaş, fatura dahil değil | Gider kalemleri aylık mı girilecek, kategorili mi? |
 | **Rezervasyon hatırlatma** | No-show oranını düşürür | SMS/WhatsApp mı, sadece liste mi yeterli? |

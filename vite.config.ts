@@ -81,6 +81,10 @@ export default defineConfig({
       },
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
+        // OCR çekirdeği ve dil modeli ~13 MB. Önbelleğe alınırsa her kurulum
+        // bunu indirir; oysa yalnızca fiş okunduğunda gerekiyor. Tarayıcının
+        // kendi HTTP önbelleği ilk indirmeden sonra saklıyor.
+        globIgnores: ['ocr/**'],
         // /kitchen isteği index.html'e düşerse mutfak yerine adisyon açılır
         navigateFallbackDenylist: [/^\/kitchen/, /^\/servis/, /^\/yonetim/],
       },

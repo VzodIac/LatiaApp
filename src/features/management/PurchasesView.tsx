@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@/store/useStore';
 import { newId, uploadReceipt, receiptUrl } from '@/data/remote';
+import { scanReceipt, type ReceiptScan } from '@/lib/ocr';
 import { fmt } from '@/lib/money';
 import { parsePrice } from '@/lib/money';
 import { formatShortDate, toDateInput, fromDateInput } from '@/lib/date';
@@ -35,6 +36,9 @@ export function PurchasesView() {
   const [receipt, setReceipt] = useState<File | null>(null);
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
+  const [scanning, setScanning] = useState(false);
+  const [scanPct, setScanPct] = useState(0);
+  const [scan, setScan] = useState<ReceiptScan | null>(null);
   const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
@@ -55,6 +59,7 @@ export function PurchasesView() {
     if (receiptPreview) URL.revokeObjectURL(receiptPreview);
     setReceipt(null);
     setReceiptPreview(null);
+    setScan(null);
     setOpen(false);
   };
 
@@ -62,6 +67,33 @@ export function PurchasesView() {
     if (receiptPreview) URL.revokeObjectURL(receiptPreview);
     setReceipt(f);
     setReceiptPreview(f ? URL.createObjectURL(f) : null);
+    setScan(null);
+  };
+
+  /**
+   * Fişi cihazda okur ve alanları ÖNERİ olarak doldurur.
+   *
+   * Okuma otomatik başlamıyor: ilk kullanımda ~5 MB model iniyor, bu mobil
+   * veride sürpriz olmamalı. Ayrıca yalnızca boş alanlar doldurulur —
+   * kullanıcının elle girdiği bir değer OCR tahminiyle ezilmemeli.
+   */
+  const runScan = async () => {
+    if (!receipt) return;
+    setScanning(true);
+    setScanPct(0);
+    try {
+      const r = await scanReceipt(receipt, setScanPct);
+      setScan(r);
+      if (r.total != null && !total) setTotal(String(r.total).replace('.', ','));
+      if (r.date != null) setDate(toDateInput(r.date));
+      if (r.docNo && !docNo) setDocNo(r.docNo);
+      if (r.supplier && !supplier) setSupplier(r.supplier);
+      if (r.total == null && !r.date && !r.docNo) showToast(tr('Fişten bilgi okunamadı'));
+    } catch (e) {
+      showToast(e instanceof Error ? e.message : String(e));
+    } finally {
+      setScanning(false);
+    }
   };
 
   const submit = async () => {
@@ -152,6 +184,59 @@ export function PurchasesView() {
               >
                 ×
               </button>
+
+              <button
+                onClick={() => void runScan()}
+                disabled={scanning}
+                style={{
+                  width: '100%',
+                  marginTop: 9,
+                  padding: 12,
+                  borderRadius: 12,
+                  border: '1px solid var(--accent)',
+                  background: 'var(--surface2)',
+                  color: 'var(--accent)',
+                  fontSize: 13.5,
+                  fontWeight: 700,
+                  opacity: scanning ? 0.7 : 1,
+                }}
+              >
+                {scanning
+                  ? `${tr('Okunuyor')} %${Math.round(scanPct * 100)}`
+                  : `🔍 ${tr('Fişten oku')}`}
+              </button>
+
+              {scanning && (
+                <div style={{ height: 3, borderRadius: 2, background: 'var(--line)', marginTop: 7, overflow: 'hidden' }}>
+                  <div style={{ height: '100%', background: 'var(--accent)', width: `${scanPct * 100}%`, transition: 'width .2s' }} />
+                </div>
+              )}
+
+              {scan && !scanning && (
+                <div
+                  style={{
+                    marginTop: 9,
+                    padding: '9px 11px',
+                    borderRadius: 11,
+                    background: 'var(--surface2)',
+                    fontSize: 11.5,
+                    color: 'var(--fg2)',
+                    lineHeight: 1.5,
+                  }}
+                >
+                  <b style={{ color: 'var(--fg)' }}>{tr('Fişten okunanlar aşağı yazıldı — kontrol et.')}</b>
+                  <br />
+                  {tr('Okuma güveni')}: %{Math.round(scan.confidence)}
+                  {scan.total != null && scan.totalLabel == null && (
+                    <>
+                      <br />
+                      <span style={{ color: 'var(--coral)' }}>
+                        {tr('Toplam etiketi bulunamadı; fişteki en büyük tutar alındı.')}
+                      </span>
+                    </>
+                  )}
+                </div>
+              )}
             </div>
           ) : (
             <button
@@ -173,7 +258,7 @@ export function PurchasesView() {
           )}
 
           <div style={{ fontSize: 11, color: 'var(--muted)', lineHeight: 1.5, marginBottom: 12 }}>
-            {tr('Fiş alım kaydına eklenir ve arşivlenir. Fişten bilgileri otomatik okuma henüz devrede değil — tutarları şimdilik elle gir.')}
+            {tr('Fiş alım kaydına eklenir ve arşivlenir. Okuma cihazda yapılır — fotoğraf hiçbir sunucuya gönderilmez. İlk okumada yaklaşık 5 MB model iner. Termal fişte hata payı vardır; okunan değerleri mutlaka kontrol et.')}
           </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>

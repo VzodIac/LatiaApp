@@ -451,4 +451,16 @@ export const en: Record<string, string> = {
   'Kaydediliyor…': 'Saving…',
   'Fiş alım kaydına eklenir ve arşivlenir. Fişten bilgileri otomatik okuma henüz devrede değil — tutarları şimdilik elle gir.':
     'The receipt is attached to the purchase and archived. Automatic reading is not active yet — enter the amounts manually for now.',
+
+  // ---- Cihaz üstü fiş okuma (v0.5.0) ----
+  'Fişten oku': 'Read receipt',
+  Okunuyor: 'Reading',
+  'Fişten bilgi okunamadı': 'Could not read anything from the receipt',
+  'Fişten okunanlar aşağı yazıldı — kontrol et.': 'Values read from the receipt were filled in below — please check.',
+  'Okuma güveni': 'Read confidence',
+  'Toplam etiketi bulunamadı; fişteki en büyük tutar alındı.':
+    'No total label found; the largest amount on the receipt was used.',
+  'Görüntü işlenemedi': 'Could not process the image',
+  'Fiş alım kaydına eklenir ve arşivlenir. Okuma cihazda yapılır — fotoğraf hiçbir sunucuya gönderilmez. İlk okumada yaklaşık 5 MB model iner. Termal fişte hata payı vardır; okunan değerleri mutlaka kontrol et.':
+    'The receipt is attached to the purchase and archived. Reading happens on your device — the photo is never sent to a server. The first read downloads about 5 MB. Thermal receipts are error-prone; always check the values.',
 };
