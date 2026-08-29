@@ -28,6 +28,8 @@ Kurulduktan sonra üç bölüm ayrı birer PWA olarak eklenebilir:
 **Ödeme**
 - Tüm hesabı kapatma **veya kişi bazlı kısmi ödeme**: adisyondaki ürünler seçilerek ayrı ayrı ödenir, kalan açık kalır
 - İndirim/ikram (%10 / %15 / ikram) — kısmi ödemelerde oransal yansır
+- **İkram gerekçesi zorunlu:** sabit sebep listesi (tanıdık, şikayet, personel yemeği…) + serbest açıklama; gerekçesiz hesap kapanmaz
+- **Kişi sayısı:** adisyon başına misafir sayısı — kişi başı harcama analizinin girdisi
 - Eşit bölme, nakit/kart, fiş ekranı
 
 **Menü & maliyet**
@@ -37,7 +39,10 @@ Kurulduktan sonra üç bölüm ayrı birer PWA olarak eklenebilir:
 - Alerjen ve kalori bilgisi (veride tutulur; düzenleme arayüzü [TODO](TODO.md))
 
 **Raporlama**
-- Gün Sonu: ciro, ortalama adisyon, kapanan/aktif/ürün sayıları, saatlik ve günlük grafik, en çok satanlar
+- Gün Sonu: ciro, ortalama adisyon, **kişi başı harcama**, kapanan/kişi/aktif/ürün sayıları, saatlik ve günlük grafik
+- **En çok satanlar** — Tümü / Yiyecek / İçecek kırılımı, satış anındaki kategori adıyla
+- **Garson performansı** — ciro sıralaması, adisyon sayısı, kişi başı harcama ve ikram oranı birlikte
+- **İkram & indirim dökümü** — gerekçe bazında tutar ve pay (kâr sızıntısı takibi)
 - Bugün / Dün / Bu Hafta + serbest tarih aralığı
 - Veritabanında hazır analiz görünümleri: ürün kârlılığı, günlük özet, hazırlık süreleri
 

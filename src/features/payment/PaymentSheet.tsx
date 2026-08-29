@@ -1,4 +1,6 @@
+import { useEffect, useState } from 'react';
 import { useStore } from '@/store/useStore';
+import { DISCOUNT_REASONS } from '@/lib/discount';
 import { computeTotals, discountLabel, lineTotal, unitTotal } from '@/lib/totals';
 import { fmt } from '@/lib/money';
 import { Sheet, SectionLabel } from '@/components/Sheet';
@@ -17,12 +19,20 @@ export function PaymentSheet({ order }: { order: Order }) {
   const selectAll = useStore((s) => s.selectAllForPay);
   const clearSel = useStore((s) => s.clearPaySelection);
   const setDiscount = useStore((s) => s.setDiscount);
+  const setDiscountReason = useStore((s) => s.setDiscountReason);
+  const setDiscountNote = useStore((s) => s.setDiscountNote);
   const changeSplit = useStore((s) => s.changeSplit);
   const setMethod = useStore((s) => s.setMethod);
   const confirmPay = useStore((s) => s.confirmPay);
 
+  // Yazma buluta geciktirilerek gönderiliyor; alan yerel durumdan beslenmezse
+  // realtime yankısı yazılanı geri alır
+  const [noteDraft, setNoteDraft] = useState(order.discountNote);
+  useEffect(() => setNoteDraft(order.discountNote), [order.id]);
+
   const unpaid = order.items.filter((it) => !it.paymentId);
   const paidCount = order.items.length - unpaid.length;
+  const needsReason = order.discountType !== 'none' && !order.discountReason;
 
   // İndirim tüm adisyona uygulanır; kısmi ödemede oransal yansır
   const all = computeTotals(order, extras);
@@ -257,13 +267,73 @@ export function PaymentSheet({ order }: { order: Order }) {
       </div>
 
       <SectionLabel>{tr('İndirim / İkram')}</SectionLabel>
-      <div style={{ display: 'flex', gap: 8, marginBottom: 18 }}>
+      <div style={{ display: 'flex', gap: 8, marginBottom: order.discountType === 'none' ? 18 : 12 }}>
         {discounts.map((d) => (
           <button key={d.t} onClick={() => setDiscount(d.t)} style={dBtn(order.discountType === d.t)}>
             {d.label}
           </button>
         ))}
       </div>
+
+      {/* Gerekçe zorunlu: sebebi kaydedilmeyen ikram denetlenemez ve
+          kâr sızıntısının en yaygın kanalıdır. Sabit liste kullanılıyor ki
+          gün sonunda "ikramların %40'ı şikayet kaynaklı" gibi bir çıkarım
+          yapılabilsin; serbest açıklama ayrıca tutulur. */}
+      {order.discountType !== 'none' && (
+        <div
+          style={{
+            border: `1px solid ${needsReason ? 'var(--coral)' : 'var(--line)'}`,
+            background: 'var(--surface)',
+            borderRadius: 14,
+            padding: 13,
+            marginBottom: 18,
+          }}
+        >
+          <div style={{ fontSize: 12.5, fontWeight: 700, color: needsReason ? 'var(--coral)' : 'var(--fg2)', marginBottom: 9 }}>
+            {needsReason ? tr('Sebep seç (zorunlu)') : tr('Sebep')}
+          </div>
+          <div style={{ display: 'flex', flexWrap: 'wrap', gap: 7, marginBottom: 10 }}>
+            {DISCOUNT_REASONS.map((r) => {
+              const on = order.discountReason === r.code;
+              return (
+                <button
+                  key={r.code}
+                  onClick={() => setDiscountReason(r.code)}
+                  style={{
+                    padding: '7px 11px',
+                    borderRadius: 20,
+                    fontSize: 12.5,
+                    fontWeight: 600,
+                    border: `1px solid ${on ? 'var(--accent)' : 'var(--line)'}`,
+                    background: on ? 'var(--accent)' : 'var(--surface2)',
+                    color: on ? '#fff' : 'var(--fg)',
+                  }}
+                >
+                  {tr(r.label)}
+                </button>
+              );
+            })}
+          </div>
+          <input
+            value={noteDraft}
+            onChange={(e) => {
+              setNoteDraft(e.target.value);
+              setDiscountNote(e.target.value);
+            }}
+            placeholder={tr('Açıklama — ör. kimin tanıdığı, ne şikayet edildi')}
+            style={{
+              width: '100%',
+              background: 'var(--surface2)',
+              border: '1px solid var(--line)',
+              borderRadius: 11,
+              padding: '10px 12px',
+              fontSize: 13,
+              color: 'var(--fg)',
+              outline: 'none',
+            }}
+          />
+        </div>
+      )}
 
       {payMode === 'all' && (
         <>
@@ -303,7 +373,7 @@ export function PaymentSheet({ order }: { order: Order }) {
           fontSize: 16,
           fontWeight: 700,
           boxShadow: '0 6px 18px rgba(79,122,82,.3)',
-          opacity: payAmount > 0 || order.discountType === 'comp' ? 1 : 0.5,
+          opacity: needsReason ? 0.5 : payAmount > 0 || order.discountType === 'comp' ? 1 : 0.5,
         }}
       >
         {order.discountType === 'comp'

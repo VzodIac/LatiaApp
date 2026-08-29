@@ -1,11 +1,12 @@
 import { useState } from 'react';
 import { useStore } from '@/store/useStore';
-import { computeTotals, lineTotal } from '@/lib/totals';
+import { computeTotals, discountLabel, lineTotal } from '@/lib/totals';
 import { fmt } from '@/lib/money';
 import { formatTime } from '@/lib/date';
 import { printReceipt } from '@/lib/print';
 import { Sheet, SectionLabel } from '@/components/Sheet';
 import type { Order } from '@/types';
+import { discountReasonLabel } from '@/lib/discount';
 import { useT } from '@/i18n/useT';
 
 /** Gün Sonu altındaki adisyon listesi — seçili tarih aralığındaki kapanmış hesaplar */
@@ -153,6 +154,27 @@ export function ManageOrderSheet({ order }: { order: Order }) {
         {order.paymentMethod === 'cash' ? tr('Nakit') : order.paymentMethod === 'card' ? tr('Kart') : '—'}
         {voided && <span style={{ color: 'var(--danger)', fontWeight: 700 }}> · {tr('İPTAL EDİLDİ')}</span>}
       </div>
+
+      {/* İkram/indirim gerekçesi — denetim için adisyonun üzerinde durmalı */}
+      {t.disc > 0 && (
+        <div
+          style={{
+            background: 'color-mix(in oklch, var(--coral), transparent 90%)',
+            border: '1px solid var(--coral)',
+            borderRadius: 12,
+            padding: '10px 13px',
+            marginBottom: 16,
+          }}
+        >
+          <div style={{ fontSize: 12.5, fontWeight: 700, color: 'var(--coral)' }}>
+            {discountLabel(order.discountType)} · −{fmt(t.disc)}
+          </div>
+          <div style={{ fontSize: 12, color: 'var(--fg2)', marginTop: 3 }}>
+            {discountReasonLabel(order.discountReason)}
+            {order.discountNote && ` — ${order.discountNote}`}
+          </div>
+        </div>
+      )}
 
       <SectionLabel>{tr('Ürünler')}</SectionLabel>
       <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 14, padding: '12px 14px', marginBottom: 16 }}>

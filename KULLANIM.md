@@ -134,20 +134,29 @@ Deneme siparişleri biriktiyse gerçek servise geçmeden temizle:
 - **Ekstra** kategorisinden yan ürünleri tek başına ekleyebilirsin
 - Bir **ana yemeğe** dokununca ("Not / ekstra ekle") o ürüne özel ekstraları adetiyle ve **not** ("az pişmiş", "soğansız" gibi) ekleyebilirsin
 - Masa adlarını **Masalar** ekranından değiştirebilirsin
+- Ürün listesinin üstündeki **Kişi sayısı** alanına masadaki misafir sayısını gir. Bu, gün sonundaki **kişi başı harcama** raporunun girdisidir — restoranlar performansı masa başına değil kişi başına ölçer. Paket siparişlerde sorulmaz
 
 **Tutarı söyleme / hesap kapatma**
 - Sipariş ekranının altında **Toplam** her zaman görünür
 - **Hesabı Kapat** → istersen indirim/ikram, hesabı bölme, **Nakit/Kart** seç
+- **İndirim veya ikram seçersen sebebi zorunludur:** listeden bir gerekçe seç (Tanıdık / Şikayet / Yanlış hazırlandı / Personel yemeği / Tanıtım / Yönetici ikramı / Diğer) ve istersen açıklama yaz ("kimin tanıdığı", "ne şikayet edildi"). Sebep girilmeden hesap kapanmaz — kaydedilmeyen ikram denetlenemez
 - **Ürün bazlı ödeme:** kişi kişi ödeme için yalnızca o kişinin ürünlerini (istersen aynı üründen sadece 1 adedini) seçip tahsil edebilirsin. Ödenen ürünler masa toplamından düşer, adisyon kalanla açık kalır
 - **Ödemeyi Al** → fiş görünür
 - Fişteki **🖨 Fişi Yazdır** ile termal yazıcıdan (80 mm) çıktı alabilirsin. Geçmiş bir adisyonun fişini yeniden yazdırmak için: **Gün Sonu → Adisyonlar → ilgili adisyon → Fişi Yazdır**
 
 **Gün sonu**
-- **Gün Sonu** sekmesinde ciro, ortalama adisyon, kapanan hesap sayısı, saatlik yoğunluk ve en çok satanlar
+- **Gün Sonu** sekmesinde ciro, ortalama adisyon ve **kişi başı harcama**; kapanan hesap, misafir, aktif masa ve ürün sayıları; saatlik/günlük grafik
+- **En Çok Satanlar** — sağ üstteki **Tümü / Yiyecek / İçecek** düğmeleriyle kırılım. Ürünün altında satış anındaki kategorisi yazar
+- **Garson Performansı** — ciroya göre sıralı; her garsonun adisyon sayısı, kişi başı harcaması ve ikram oranı birlikte görünür
+
+  > Sıralamaya yalnızca ciroya bakarak karar verme: akşam masalarına bakan biri kahvaltı vardiyasındakini otomatik yener. Kişi başı harcama ve ikram oranı, sıralamanın adil okunması için oradadır.
+
+- **İkram & İndirim** — toplam tutar, brüt satışa oranı ve gerekçe bazında döküm. "İkramların %40'ı şikayet kaynaklı" gibi bir okuma buradan çıkar
 - Üstten **Bugün / Dün / Bu Hafta** veya **Tarih** ile istediğin tarih aralığını incele
 
 **Hatalı hesabı düzeltme**
 - **Gün Sonu** sekmesinin altındaki **Adisyonlar** listesinde seçili aralıkta kapanan hesaplar görünür (son 5, "Tümünü göster" ile hepsi)
+- İndirim/ikram uygulanmış bir adisyonda gerekçe ve açıklama, adisyonun üstünde ayrı bir kutuda görünür
 - Bir adisyona dokununca üç seçenek çıkar:
   - **Yeniden aç** — hesap tekrar açılır, ürünleri düzeltip yeniden kapatırsın
   - **İptal et** — sebebini yazarsın, hesap cirodan düşer ama kayıt izlenebilir kalır (önerilen)
@@ -180,7 +189,7 @@ Garson ve mutfak birbirini canlı görür:
 - 📶 Uygulama çalışmak için internet ister. Bağlantı koptuğunda **Ayarlar → Şimdi eşitle** ile tekrar bağlanabilirsin.
 - 🔒 Güvenlik için başlangıç PIN'lerini kendi belirlediğin PIN'lerle değiştirmen önerilir. Bir cihaz kaybolursa **Ayarlar → Cihaz bağlantısını kes** ile o cihazın erişimini kapat.
 - 🔄 **Güncellemeler otomatik gelir.** Uygulamayı her açtığında en güncel sürüm yüklenir.
-- 🏷️ Kullandığın **sürümü** görmek için: **Ayarlar** sekmesinin en altı (ör. `v0.1.0`).
+- 🏷️ Kullandığın **sürümü** görmek için: **Ayarlar** sekmesinin en altı (ör. `v0.2.0`).
 - 🧭 Sistem üç bölümden oluşur: **Servis** (`/servis`), **Mutfak** (`/kitchen`) ve ileride gelecek **Yönetim** paneli. Her biri ayrı ayrı ana ekrana eklenebilir.
 
 ---

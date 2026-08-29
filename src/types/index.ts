@@ -118,6 +118,8 @@ export interface OrderItem {
   note: string;
   /** Seçili ekstralar ve adetleri */
   extras: SelectedExtra[];
+  /** Satış anındaki kategori adı (snapshot) — kategori sonradan değişse de rapor bozulmaz */
+  categoryName: string;
   station: Station;
   /** Mutfak ekranı durumu */
   kdsStatus: ItemStatus;
@@ -148,6 +150,10 @@ export interface Order {
   paidAt: number | null;
   paymentMethod: PaymentMethod | null;
   discountType: DiscountType;
+  /** İkram / indirim gerekçesi (sabit kod — bkz. lib/discount.ts) */
+  discountReason: string;
+  /** Gerekçeye ek serbest açıklama */
+  discountNote: string;
   splitCount: number;
 }
 

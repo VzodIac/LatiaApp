@@ -31,6 +31,7 @@ export function OrderDetail({ order }: { order: Order }) {
   const changeQty = useStore((s) => s.changeQty);
   const openItemEdit = useStore((s) => s.openItemEdit);
   const setItemStatus = useStore((s) => s.setItemStatus);
+  const setGuestCount = useStore((s) => s.setGuestCount);
 
   const all = computeTotals(order, extras);
   const t = computeRemaining(order, extras);
@@ -57,6 +58,35 @@ export function OrderDetail({ order }: { order: Order }) {
           {tr('Sil')}
         </button>
       </div>
+
+      {/* Kişi sayısı: kişi başı harcama restoranların temel metriği.
+          Paket siparişte misafir kavramı yok, bu yüzden gizlenir. */}
+      {order.kind !== 'paket' && (
+        <div
+          style={{
+            flex: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '10px 18px',
+            borderBottom: '1px solid var(--line)',
+            background: 'var(--surface)',
+          }}
+        >
+          <span style={{ fontSize: 13, color: 'var(--fg2)' }}>{tr('Kişi sayısı')}</span>
+          <div style={{ display: 'flex', alignItems: 'center', background: 'var(--surface2)', borderRadius: 10 }}>
+            <button onClick={() => setGuestCount(order.guestCount - 1)} style={qtyBtn} aria-label={tr('Azalt')}>
+              −
+            </button>
+            <span style={{ minWidth: 26, textAlign: 'center', fontSize: 14.5, fontWeight: 700, color: 'var(--fg)' }}>
+              {order.guestCount}
+            </span>
+            <button onClick={() => setGuestCount(order.guestCount + 1)} style={qtyBtn} aria-label={tr('Artır')}>
+              +
+            </button>
+          </div>
+        </div>
+      )}
 
       <div className="scr" style={{ flex: 1, overflowY: 'auto', padding: '14px 18px 20px' }}>
         {empty ? (
@@ -180,6 +210,11 @@ export function OrderDetail({ order }: { order: Order }) {
             {paidAmount > 0 && (
               <div style={{ fontSize: 11.5, color: 'var(--good)', fontWeight: 600 }}>
                 {tr('Ödenen')}: {fmt(paidAmount)}
+              </div>
+            )}
+            {order.kind !== 'paket' && order.guestCount > 1 && all.total > 0 && (
+              <div style={{ fontSize: 11.5, color: 'var(--fg2)' }}>
+                {tr('Kişi başı')}: {fmt(all.total / order.guestCount)}
               </div>
             )}
           </div>

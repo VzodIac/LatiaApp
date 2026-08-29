@@ -170,6 +170,8 @@ interface State {
   selectAllForPay: () => void;
   clearPaySelection: () => void;
   setDiscount: (t: DiscountType) => void;
+  setDiscountReason: (code: string) => void;
+  setDiscountNote: (v: string) => void;
   changeSplit: (d: number) => void;
   setMethod: (m: PaymentMethod) => void;
   confirmPay: () => Promise<void>;
@@ -236,6 +238,8 @@ function blankOrder(p: Partial<Order> & Pick<Order, 'id' | 'kind' | 'label' | 'w
     paidAt: null,
     paymentMethod: null,
     discountType: 'none',
+    discountReason: '',
+    discountNote: '',
     splitCount: 1,
     ...p,
   };
@@ -288,6 +292,10 @@ export const useStore = create<State>((set, get) => {
   };
 
   /** Ürünün düşeceği istasyon: üründe tanımlıysa o, yoksa kategoriden */
+  /** Satış anında dondurulacak kategori adı — sonradan yeniden adlandırılsa da rapor bozulmaz */
+  const categoryNameOf = (m: MenuItem): string =>
+    get().categories.find((c) => c.id === m.catId)?.name ?? '';
+
   const stationOf = (m: MenuItem): Station => {
     if (m.station) return m.station;
     return get().categories.find((c) => c.id === m.catId)?.station ?? 'kitchen';
@@ -687,6 +695,7 @@ export const useStore = create<State>((set, get) => {
               qty: 1,
               note: '',
               extras: [],
+              categoryName: categoryNameOf(mi),
               station: stationOf(mi),
               kdsStatus: 'new',
               sentAt: null,
@@ -811,8 +820,30 @@ export const useStore = create<State>((set, get) => {
       if (!oid) return;
       patchOrder(oid, (o) => {
         o.discountType = o.discountType === t ? 'none' : t;
+        // İndirim kaldırılırsa gerekçe de düşer
+        if (o.discountType === 'none') {
+          o.discountReason = '';
+          o.discountNote = '';
+        }
         return o;
       });
+    },
+    setDiscountReason(code) {
+      const oid = get().orderOpen;
+      if (!oid) return;
+      patchOrder(oid, (o) => {
+        o.discountReason = o.discountReason === code ? '' : code;
+        return o;
+      });
+    },
+    setDiscountNote(v) {
+      const oid = get().orderOpen;
+      if (!oid) return;
+      // Not yazarken her tuşta ağ isteği göndermemek için geciktirilir
+      patchOrder(oid, (o) => {
+        o.discountNote = v;
+        return o;
+      }, true);
     },
     changeSplit(d) {
       const oid = get().orderOpen;
@@ -836,6 +867,11 @@ export const useStore = create<State>((set, get) => {
       if (!o) return;
       if (!o.paymentMethod) {
         get().showToast(t('Ödeme tipi seç'));
+        return;
+      }
+      // İkram/indirim gerekçesiz kapatılamaz — denetlenemeyen ikram kâr sızıntısıdır
+      if (o.discountType !== 'none' && !o.discountReason) {
+        get().showToast(t('İkram / indirim sebebi seç'));
         return;
       }
 

@@ -76,7 +76,6 @@ kazançlar.
 
 | Ne | Nerede duruyor | Neden gerekli |
 |---|---|---|
-| **Kişi sayısı** | `orders.guest_count` + `setGuestCount` eylemi | Kişi başı harcama, sektörün temel metriği |
 | **Alerjen ve kalori düzenleme** | `menu_items.allergens`, `kcal` | Seed'de dolu ama menüden düzenlenemiyor |
 | **Ekstra reçetesi** | `recipe_items.extra_id` | Ekstraların maliyeti şu an 0; marj eksik hesaplanıyor |
 | **Vardiya / kasa** | `shifts` tablosu | Gün sonu nakit mutabakatı (açılış/kapanış kasası) |
@@ -84,6 +83,20 @@ kazançlar.
 | **Ürün istasyon istisnası** | `menu_items.station` | Kategoriden farklı istasyona düşmesi gereken ürünler |
 | **Satır bazlı iptal sebebi** | `order_items.void_reason` | Şu an yalnızca adisyon bazında iptal var |
 | **Servis sırası (course)** | `order_items.course` | Önce içecek, sonra yemek gibi akışlar |
+
+---
+
+## 🟠 İşletmeci geri bildiriminden gelen sıradaki işler
+
+Sahadan gelen değerlendirmenin uygulanmayan maddeleri. v0.2.0'da 1, 5, 6 ve 7
+karşılandı; kalanlar aşağıda.
+
+| Ne | Neden | Önce cevaplanmalı |
+|---|---|---|
+| **Bahşiş** | Kartlı ödemede garsonlar için kritik | Havuz mu, masaya bakana mı? Mutfak pay alıyor mu? Uygulama yalnızca *beyan edileni* kaydedebilir; gerçek tahsilat POS tarafında |
+| **Giriş akışı** | Açılışta garson sorulması personel devri yüksek ekipte zahmetli | Cihaz oturumu açık kalmalı, uygulama Masalar'a düşmeli, garson **ilk ürün eklenirken** seçilmeli. Atıf korunmalı — ikram sorumluluğu ve garson raporu buna dayanıyor |
+| **Rezervasyon** | Akşam servisi rezervasyonla doluyorsa gerekli | Günde kaç rezervasyon? 5'in altındaysa masaya not alanı yeter, modül israf |
+| **e-Fatura → maliyet** | Reçete kârlılığının beslenmesi | Hangi muhasebe programı/entegratör? Önce manuel + fiş girişi ve tedarikçi-ürün sözlüğü yapılmalı; asıl zorluk fatura satırını malzemeye eşleştirmek |
 
 ---
 

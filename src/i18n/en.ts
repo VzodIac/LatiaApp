@@ -326,4 +326,37 @@ export const en: Record<string, string> = {
   Ödendi: 'Paid',
 
   'Ödenecek adet': 'Qty to pay',
+
+  // ---- Yönetim analitiği (v0.2.0) ----
+  'Kişi sayısı': 'Guests',
+  'Kişi başı': 'Per guest',
+  'kişi başı': 'per guest',
+  Kişi: 'Guests',
+  Ürün: 'Items',
+  'Ort. adisyon': 'Avg. check',
+  Azalt: 'Decrease',
+  Artır: 'Increase',
+
+  'Garson Performansı': 'Server Performance',
+  'Ciroya göre sıralı': 'Ranked by revenue',
+  '{n} adisyon': '{n} checks',
+  ikram: 'comps',
+  Bilinmiyor: 'Unknown',
+
+  'İkram & İndirim': 'Comps & Discounts',
+  'Sebep seç (zorunlu)': 'Select a reason (required)',
+  Sebep: 'Reason',
+  'İkram / indirim sebebi seç': 'Select a comp / discount reason',
+  'Açıklama — ör. kimin tanıdığı, ne şikayet edildi': 'Details — e.g. whose guest, what was the complaint',
+  Belirtilmedi: 'Not specified',
+  'Tanıdık / dost': 'Friend of the house',
+  'Şikayet / memnuniyet': 'Complaint / goodwill',
+  'Yanlış hazırlandı': 'Prepared incorrectly',
+  'Personel yemeği': 'Staff meal',
+  'Tanıtım / sosyal medya': 'Promotion / social media',
+  'Yönetici ikramı': 'Manager comp',
+  Diğer: 'Other',
+
+  Yiyecek: 'Food',
+  'İçecek': 'Drinks',
 };
