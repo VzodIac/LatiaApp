@@ -17,15 +17,41 @@ alter table reservations add column if not exists duration_min int not null defa
 -- Kontrol yalnızca arayüzde yapılsaydı iki cihaz aynı anda kaydettiğinde
 -- ikisi de geçerdi. Exclusion constraint bunu veritabanı düzeyinde keser.
 -- İptal ve gelmedi durumundakiler masayı işgal etmez.
+--
+-- Bitiş zamanı ayrı bir kolonda tutuluyor: "reserved_at + interval" ifadesi
+-- IMMUTABLE değildir (yaz saati için zaman dilimi ayarına bakar) ve bu yüzden
+-- doğrudan indeks/kısıt ifadesinde kullanılamaz. Trigger kolonu güncel tutar.
 -- ---------------------------------------------------------------------------
 create extension if not exists btree_gist;
+
+alter table reservations add column if not exists ends_at timestamptz;
+
+create or replace function reservations_set_ends_at() returns trigger
+language plpgsql as $fn$
+begin
+  new.ends_at := new.reserved_at + make_interval(mins => new.duration_min);
+  return new;
+end;
+$fn$;
+
+drop trigger if exists trg_reservations_ends_at on reservations;
+create trigger trg_reservations_ends_at
+  before insert or update on reservations
+  for each row execute function reservations_set_ends_at();
+
+-- Var olan kayıtlar için doldur
+update reservations
+   set ends_at = reserved_at + make_interval(mins => duration_min)
+ where ends_at is null;
+
+alter table reservations alter column ends_at set not null;
 
 alter table reservations drop constraint if exists reservations_no_overlap;
 alter table reservations add constraint reservations_no_overlap
   exclude using gist (
     business_id with =,
     table_no with =,
-    tstzrange(reserved_at, reserved_at + make_interval(mins => duration_min)) with &&
+    tstzrange(reserved_at, ends_at) with &&
   ) where (table_no is not null and status in ('booked', 'seated'));
 
 -- ---------------------------------------------------------------------------
