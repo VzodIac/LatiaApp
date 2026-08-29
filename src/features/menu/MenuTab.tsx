@@ -49,6 +49,20 @@ export function MenuTab() {
 
       {view === 'ingredients' && <IngredientsView />}
 
+      {/* Kategori yoksa ekran bomboş kalıyordu ve ürün eklemek de mümkün
+          değildi (ürün bir kategoriye bağlanmak zorunda). Ne yapılacağını söyle. */}
+      {view === 'items' && categories.length === 0 && (
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 16, padding: '18px 16px', marginBottom: 16 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--fg)', marginBottom: 6 }}>{tr('Menü boş')}</div>
+          <div style={{ fontSize: 12.5, color: 'var(--fg2)', lineHeight: 1.6 }}>
+            {tr('Hiç kategori yok, bu yüzden ürün de eklenemiyor. Aşağıdan bir kategori ekleyerek başla (ör. “Ana Yemek”), sonra “+ Ürün” ile ürünleri gir.')}
+            <br />
+            <br />
+            {tr('Hazır menü kurulmuş olması gerekiyorsa Ayarlar’daki işletme adını kontrol et — veritabanında birden fazla işletme varsa menü diğerine kurulmuş olabilir.')}
+          </div>
+        </div>
+      )}
+
       {view === 'items' && categories.map((c) => {
         const items = menuItems.filter((m) => m.catId === c.id);
         return (

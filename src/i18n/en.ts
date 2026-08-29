@@ -463,4 +463,11 @@ export const en: Record<string, string> = {
   'Görüntü işlenemedi': 'Could not process the image',
   'Fiş alım kaydına eklenir ve arşivlenir. Okuma cihazda yapılır — fotoğraf hiçbir sunucuya gönderilmez. İlk okumada yaklaşık 5 MB model iner. Termal fişte hata payı vardır; okunan değerleri mutlaka kontrol et.':
     'The receipt is attached to the purchase and archived. Reading happens on your device — the photo is never sent to a server. The first read downloads about 5 MB. Thermal receipts are error-prone; always check the values.',
+
+  // ---- Boş menü uyarısı (v0.5.1) ----
+  'Menü boş': 'Menu is empty',
+  'Hiç kategori yok, bu yüzden ürün de eklenemiyor. Aşağıdan bir kategori ekleyerek başla (ör. “Ana Yemek”), sonra “+ Ürün” ile ürünleri gir.':
+    'There are no categories yet, so items cannot be added. Add a category below (e.g. “Mains”), then use “+ Item”.',
+  'Hazır menü kurulmuş olması gerekiyorsa Ayarlar’daki işletme adını kontrol et — veritabanında birden fazla işletme varsa menü diğerine kurulmuş olabilir.':
+    'If a menu should already be installed, check the business name in Settings — if the database holds more than one business, the menu may have been installed on the other one.',
 };

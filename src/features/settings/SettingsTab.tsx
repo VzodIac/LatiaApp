@@ -10,6 +10,8 @@ export function SettingsTab() {
   const theme = useStore((s) => s.settings.theme);
   const activeWaiter = useStore((s) => s.settings.activeWaiter);
   const waiters = useStore((s) => s.waiters);
+  const businessName = useStore((s) => s.businessName);
+  const menuCount = useStore((s) => s.menuItems.length);
   const setTheme = useStore((s) => s.setTheme);
   const lang = useStore((s) => s.lang);
   const setLang = useStore((s) => s.setLang);
@@ -227,7 +229,14 @@ export function SettingsTab() {
       </div>
 
       <div style={{ textAlign: 'center', marginTop: 26 }}>
-        <div style={{ fontSize: 11.5, color: 'var(--muted)', marginBottom: 4 }}>La Tía · v{__APP_VERSION__}</div>
+        <div style={{ fontSize: 11.5, color: 'var(--muted)', marginBottom: 4 }}>
+          La Tía · v{__APP_VERSION__}
+          {/* Hangi işletme kaydına bağlandığımız görünür olmalı: veritabanında
+              birden fazla işletme varsa uygulama sessizce yanlışına bağlanıp
+              "menü boş" gibi anlaşılmaz bir sonuç veriyordu. */}
+          {businessName && ` · ${businessName}`}
+          {` · ${menuCount} ürün`}
+        </div>
         <Signature />
       </div>
     </div>

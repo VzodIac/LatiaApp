@@ -51,23 +51,36 @@ export const BUSINESS_NAME = 'La Tía';
  * yaklaşımı uygulamayı sessizce yanlış menüye bağlıyordu. Ad bulunamazsa
  * en eski işletmeye düşülür — tek işletmeli normal kurulumda davranış aynı.
  */
+/** Bağlanılan işletmenin adı — Ayarlar'da gösterilir, yanlış bağlanma görünür olsun diye */
+let businessLabel = '';
+export const getBusinessName = () => businessLabel;
+
 export async function loadBusinessId(): Promise<string> {
   if (businessId) return businessId;
 
-  const byName = await supabase.from('businesses').select('id').eq('name', BUSINESS_NAME).maybeSingle();
-  if (byName.data) {
-    businessId = byName.data.id as string;
+  // maybeSingle() birden fazla satırda HATA verir; aynı adla iki kayıt oluşursa
+  // uygulama tamamen açılmaz hâle gelirdi. limit(1) böyle bir durumda da çalışır.
+  const byName = await supabase
+    .from('businesses')
+    .select('id,name')
+    .eq('name', BUSINESS_NAME)
+    .order('created_at')
+    .limit(1);
+  if (byName.data?.length) {
+    businessId = String(byName.data[0].id);
+    businessLabel = String(byName.data[0].name);
     return businessId;
   }
 
   const { data, error } = await supabase
     .from('businesses')
-    .select('id')
+    .select('id,name')
     .order('created_at')
-    .limit(1)
-    .single();
+    .limit(1);
   if (error) throw new Error(`İşletme bulunamadı: ${error.message}`);
-  businessId = data.id as string;
+  if (!data?.length) throw new Error('Veritabanında işletme kaydı yok — seed.sql çalıştırılmalı.');
+  businessId = String(data[0].id);
+  businessLabel = String(data[0].name);
   return businessId;
 }
 

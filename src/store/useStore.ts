@@ -75,6 +75,8 @@ interface State {
   menuItems: MenuItem[];
   extras: Extra[];
   ingredients: Ingredient[];
+  /** Bağlanılan işletmenin adı — Ayarlar'da gösterilir */
+  businessName: string;
   recipes: RecipeItem[];
   waiters: Waiter[];
   tables: TableDef[];
@@ -400,6 +402,7 @@ export const useStore = create<State>((set, get) => {
     menuItems: [],
     extras: [],
     ingredients: [],
+    businessName: '',
     purchases: [],
     reservations: [],
     resDay: startOfDay(Date.now()),
@@ -460,6 +463,7 @@ export const useStore = create<State>((set, get) => {
           menuItems: snap.menuItems,
           extras: snap.extras,
           ingredients: snap.ingredients,
+          businessName: remote.getBusinessName(),
           recipes: snap.recipes,
           waiters: snap.waiters,
           tables: snap.tables,
@@ -490,6 +494,7 @@ export const useStore = create<State>((set, get) => {
           menuItems: snap.menuItems,
           extras: snap.extras,
           ingredients: snap.ingredients,
+          businessName: remote.getBusinessName(),
           recipes: snap.recipes,
           waiters: snap.waiters,
           tables: snap.tables,
