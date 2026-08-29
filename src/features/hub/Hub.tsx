@@ -5,8 +5,8 @@ import { useT } from '@/i18n/useT';
 /**
  * Kök adresteki seçim ekranı.
  *
- * Uygulama üç bağımsız yüze ayrıldı: servis (garson), mutfak ve ileride
- * yönetim paneli. Her biri kendi adresinde olduğu için ayrı ayrı ana ekrana
+ * Uygulama dört bağımsız yüze ayrıldı: servis (garson), mutfak, yönetim ve
+ * bu seçim ekranı. Her biri kendi adresinde olduğu için ayrı ayrı ana ekrana
  * eklenebiliyor; bu sayfa da hangisinin nerede olduğunu gösteriyor.
  */
 export function Hub() {
@@ -107,9 +107,9 @@ export function Hub() {
             desc: tr('Hazırlık ekranı — gelen siparişler ve durumları'),
           })}
           {card({
+            href: '/yonetim',
             title: tr('Yönetim'),
-            desc: tr('Kârlılık, menü analizi ve maliyet raporları'),
-            soon: true,
+            desc: tr('Kârlılık, bahşiş havuzu, malzeme alımları ve rezervasyon'),
           })}
         </div>
 

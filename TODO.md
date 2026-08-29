@@ -88,15 +88,16 @@ kazançlar.
 
 ## 🟠 İşletmeci geri bildiriminden gelen sıradaki işler
 
-Sahadan gelen değerlendirmenin uygulanmayan maddeleri. v0.2.0'da 1, 5, 6 ve 7
-karşılandı; kalanlar aşağıda.
+Sahadan gelen değerlendirmenin uygulanmayan maddeleri. v0.2.0'da 1, 5, 6 ve 7; v0.3.0'da
+bahşiş (havuz), rezervasyon ve alım girişi karşılandı. Kalan uçlar aşağıda.
 
 | Ne | Neden | Önce cevaplanmalı |
 |---|---|---|
-| **Bahşiş** | Kartlı ödemede garsonlar için kritik | Havuz mu, masaya bakana mı? Mutfak pay alıyor mu? Uygulama yalnızca *beyan edileni* kaydedebilir; gerçek tahsilat POS tarafında |
 | **Giriş akışı** | Açılışta garson sorulması personel devri yüksek ekipte zahmetli | Cihaz oturumu açık kalmalı, uygulama Masalar'a düşmeli, garson **ilk ürün eklenirken** seçilmeli. Atıf korunmalı — ikram sorumluluğu ve garson raporu buna dayanıyor |
-| **Rezervasyon** | Akşam servisi rezervasyonla doluyorsa gerekli | Günde kaç rezervasyon? 5'in altındaysa masaya not alanı yeter, modül israf |
-| **e-Fatura → maliyet** | Reçete kârlılığının beslenmesi | Hangi muhasebe programı/entegratör? Önce manuel + fiş girişi ve tedarikçi-ürün sözlüğü yapılmalı; asıl zorluk fatura satırını malzemeye eşleştirmek |
+| **Vardiya takibi (bahşiş için)** | Havuz sektörde çalışılan saate göre bölünür; şu an adisyon sayısı yaklaşık ölçü | `shifts` tablosu duruyor, açılış/kapanış girişi yapılmalı |
+| **POS bahşiş mutabakatı** | Uygulama yalnızca *girilen* bahşişi bilir; kartlı tahsilat POS tarafında | Hangi POS/banka? Ekstre karşılaştırması elle mi yapılacak? |
+| **e-Fatura entegrasyonu** | Alım girişi manuel çalışıyor; otomatik çekim sıradaki adım | Hangi muhasebe programı/entegratör? Asıl iş fatura satırını malzemeye eşleştiren tedarikçi-ürün sözlüğü |
+| **Rezervasyon hatırlatma** | No-show oranını düşürür | SMS/WhatsApp mı, sadece liste mi yeterli? |
 
 ---
 

@@ -23,6 +23,8 @@ export function PaymentSheet({ order }: { order: Order }) {
   const setDiscountNote = useStore((s) => s.setDiscountNote);
   const changeSplit = useStore((s) => s.changeSplit);
   const setMethod = useStore((s) => s.setMethod);
+  const payTip = useStore((s) => s.payTip);
+  const setPayTip = useStore((s) => s.setPayTip);
   const confirmPay = useStore((s) => s.confirmPay);
 
   // Yazma buluta geciktirilerek gönderiliyor; alan yerel durumdan beslenmezse
@@ -33,6 +35,7 @@ export function PaymentSheet({ order }: { order: Order }) {
   const unpaid = order.items.filter((it) => !it.paymentId);
   const paidCount = order.items.length - unpaid.length;
   const needsReason = order.discountType !== 'none' && !order.discountReason;
+  const tipPresets = [5, 10, 15];
 
   // İndirim tüm adisyona uygulanır; kısmi ödemede oransal yansır
   const all = computeTotals(order, extras);
@@ -352,6 +355,81 @@ export function PaymentSheet({ order }: { order: Order }) {
         </>
       )}
 
+      {/* Bahşiş — havuza gider, garsona doğrudan değil.
+          Uygulama yalnızca GİRİLEN tutarı kaydeder; kartlı bahşişin gerçek
+          tahsilatı POS tarafındadır ve mutabakat oradan yapılır. */}
+      <SectionLabel>{tr('Bahşiş (havuz)')}</SectionLabel>
+      <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 14, padding: 13, marginBottom: 18 }}>
+        <div style={{ display: 'flex', gap: 7, marginBottom: 10 }}>
+          <button
+            onClick={() => setPayTip(0)}
+            style={{
+              flex: 1,
+              padding: '9px 4px',
+              borderRadius: 11,
+              fontSize: 12.5,
+              fontWeight: 600,
+              border: `1px solid ${payTip === 0 ? 'var(--accent)' : 'var(--line)'}`,
+              background: payTip === 0 ? 'var(--accent)' : 'var(--surface2)',
+              color: payTip === 0 ? '#fff' : 'var(--fg)',
+            }}
+          >
+            {tr('Yok')}
+          </button>
+          {tipPresets.map((pct) => {
+            const val = Math.round(payAmount * pct) / 100;
+            const on = payTip > 0 && Math.abs(payTip - val) < 0.005;
+            return (
+              <button
+                key={pct}
+                onClick={() => setPayTip(val)}
+                style={{
+                  flex: 1,
+                  padding: '9px 4px',
+                  borderRadius: 11,
+                  fontSize: 12.5,
+                  fontWeight: 600,
+                  border: `1px solid ${on ? 'var(--accent)' : 'var(--line)'}`,
+                  background: on ? 'var(--accent)' : 'var(--surface2)',
+                  color: on ? '#fff' : 'var(--fg)',
+                }}
+              >
+                %{pct}
+              </button>
+            );
+          })}
+        </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+          <span style={{ fontSize: 12.5, color: 'var(--fg2)', flex: 'none' }}>{tr('Tutar')}</span>
+          <input
+            type="number"
+            inputMode="decimal"
+            min={0}
+            step="0.01"
+            value={payTip === 0 ? '' : payTip}
+            onChange={(e) => setPayTip(Number(e.target.value) || 0)}
+            placeholder="0"
+            style={{
+              flex: 1,
+              background: 'var(--surface2)',
+              border: '1px solid var(--line)',
+              borderRadius: 11,
+              padding: '10px 12px',
+              fontSize: 14,
+              fontWeight: 600,
+              color: 'var(--fg)',
+              outline: 'none',
+            }}
+          />
+        </div>
+        {payTip > 0 && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13, fontWeight: 700, color: 'var(--good)', marginTop: 10 }}>
+            <span>{tr('Tahsil edilecek')}</span>
+            <span>{fmt(payAmount + payTip)}</span>
+          </div>
+        )}
+      </div>
+
       <SectionLabel>{tr('Ödeme Tipi')}</SectionLabel>
       <div style={{ display: 'flex', gap: 10, marginBottom: 20 }}>
         <button onClick={() => setMethod('cash')} style={pBtn(order.paymentMethod === 'cash')}>
@@ -379,8 +457,8 @@ export function PaymentSheet({ order }: { order: Order }) {
         {order.discountType === 'comp'
           ? tr('İkram Olarak Kapat')
           : payMode === 'select'
-            ? tr('Seçilenleri Al · {amount}', { amount: fmt(payAmount) })
-            : tr('Ödemeyi Al · {amount}', { amount: fmt(payAmount) })}
+            ? tr('Seçilenleri Al · {amount}', { amount: fmt(payAmount + payTip) })
+            : tr('Ödemeyi Al · {amount}', { amount: fmt(payAmount + payTip) })}
       </button>
     </Sheet>
   );

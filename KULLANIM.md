@@ -12,15 +12,16 @@ Telefonunda **Safari** (iPhone) veya **Chrome** (Android) ile şu adresi aç:
 
 > ## 👉 https://latia-app.vercel.app/servis
 
-Sistem üç bölümden oluşur ve **her biri ayrı bir uygulama olarak** ana ekrana eklenebilir:
+Sistem dört bölümden oluşur ve **her biri ayrı bir uygulama olarak** ana ekrana eklenebilir:
 
 | Bölüm | Adres | Kim kullanır | İkon rengi |
 |---|---|---|---|
 | **Servis** | `https://latia-app.vercel.app/servis` | Garsonlar | Bordo zemin |
 | **Mutfak** | `https://latia-app.vercel.app/kitchen` | Mutfak/bar | Fildişi zemin |
+| **Yönetim** | `https://latia-app.vercel.app/yonetim` | İşletme sahibi/müdür | Terracotta zemin |
 | **Bölüm seçimi** | `https://latia-app.vercel.app` | Hepsi | Koyu zemin |
 
-Üç ikonun da üzerinde **LA TÍA** yazar; yalnızca zemin renkleri farklıdır, böylece ana ekranda karışmazlar.
+Dört ikonun da üzerinde **LA TÍA** yazar; yalnızca zemin renkleri farklıdır, böylece ana ekranda karışmazlar.
 
 ## 2. Ana ekrana ekle (uygulama gibi kullan)
 
@@ -102,7 +103,35 @@ Bir kez cihaz girişi yapılır, sonra tam ekran mutfak ekranı açılır:
 - Ürünün yanındaki **?** butonu **içindekileri** gösterir — yeni gelen personel ne koyacağını ekrandan okur
 - Sağ üstteki **⚙** ile mutfak ekranının **dilini, temasını ve bildirimlerini** ayarla (sadece o cihazı etkiler)
 
-## 7. Malzeme ve maliyet (isteğe bağlı ama önerilir)
+## 7. Yönetim paneli
+
+> ## 👉 https://latia-app.vercel.app/yonetim
+
+Bunu da **ana ekrana ekle** — ayrı bir uygulama olarak kurulur (terracotta ikon). Ayrı tutulmasının sebebi şu: burada maliyet, kâr marjı, bahşiş havuzu ve tedarikçi fiyatları var. Bu bilgiler salondaki garson telefonlarında durmamalı.
+
+Dört bölümü var:
+
+**Kârlılık** — Seçili tarih aralığında ciro, maliyet, brüt kâr ve marj; altında ürün bazında döküm (en çok kazandırandan başlayarak).
+
+> Reçetesi girilmemiş ürünler **"reçetesiz"** olarak işaretlenir ve maliyeti 0 sayılır — yani marjları olduğundan yüksek görünür. Üstteki uyarı, cironun yüzde kaçında maliyetin bilinmediğini söyler. Bu oran yüksekse rakama güvenme, önce reçeteleri gir.
+
+**Bahşiş** — Havuzda biriken toplam ve garsonlara dağıtımı. İki kural arasında seçim yapabilirsin: **adisyon sayısına göre** veya **eşit**. Her garsonun kendi topladığı tutar da ayrıca görünür.
+
+> Sektörde havuz genelde çalışılan saate göre bölünür. Vardiya takibi henüz olmadığı için adisyon sayısı yaklaşık ölçü olarak kullanılıyor — buradaki rakam yol göstericidir, dağıtımı elle de yapabilirsin.
+>
+> ⚠️ Uygulama yalnızca **girilen** bahşişi bilir. Kartlı bahşişin gerçek tahsilatı POS/banka tarafındadır; ay sonu mutabakatını oradan yap.
+
+**Alımlar** — Malzeme alımı gir: malzeme, miktar, ödenen toplam, tedarikçi, fatura/fiş no ve tarih. Kaydetmeden önce **hesaplanan birim maliyeti** gösterir; kilo yerine gram girmek gibi hatalar burada yakalanır.
+
+Alım kaydedilince malzemenin birim maliyeti güncellenir, fiyat geçmişine yazılır ve reçeteler üzerinden ürün maliyetlerine yayılır. **Geçmiş bozulmaz:** satılmış ürünlerin maliyeti satış anında dondurulduğu için eski kârlılık aynı kalır, yeni fiyat yalnızca bundan sonraki satışlara yansır.
+
+> Bu, e-fatura entegrasyonunun ilk adımıdır. Entegratör bağlandığında faturalar aynı listeye düşecek; şimdiden burada veri toplamak, hangi tedarikçiden ne aldığınızın kaydını çıkarır.
+
+**Rezervasyon** — Gün seçip rezervasyon ekle (isim, saat, kişi, telefon, masa, not). Her kaydın durumu tek dokunuşla değişir: **Bekliyor → Geldi / Gelmedi / İptal**. Üstte o günün toplam rezervasyon ve kişi sayısı görünür.
+
+---
+
+## 8. Malzeme ve maliyet (isteğe bağlı ama önerilir)
 
 **Menü** sekmesi → **Malzemeler**:
 - Malzeme ekle: ad, birim (gram/ml/adet), birim maliyet
@@ -113,7 +142,7 @@ Sonra **Ürünler**'den bir ürüne dokun → **Reçete** bölümünden malzemel
 
 > Neden önemli: Maliyeti girdiğin andan itibaren her satışta o günkü maliyet de kaydedilir. İleride fiyat değiştirsen bile geçmiş kârın doğru kalır — hangi ürünün gerçekten kazandırdığını görebilirsin.
 
-## 8. Gerçek kullanıma başla (temiz başlangıç)
+## 9. Gerçek kullanıma başla (temiz başlangıç)
 
 Deneme siparişleri biriktiyse gerçek servise geçmeden temizle:
 
@@ -141,6 +170,7 @@ Deneme siparişleri biriktiyse gerçek servise geçmeden temizle:
 - **Hesabı Kapat** → istersen indirim/ikram, hesabı bölme, **Nakit/Kart** seç
 - **İndirim veya ikram seçersen sebebi zorunludur:** listeden bir gerekçe seç (Tanıdık / Şikayet / Yanlış hazırlandı / Personel yemeği / Tanıtım / Yönetici ikramı / Diğer) ve istersen açıklama yaz ("kimin tanıdığı", "ne şikayet edildi"). Sebep girilmeden hesap kapanmaz — kaydedilmeyen ikram denetlenemez
 - **Ürün bazlı ödeme:** kişi kişi ödeme için yalnızca o kişinin ürünlerini (istersen aynı üründen sadece 1 adedini) seçip tahsil edebilirsin. Ödenen ürünler masa toplamından düşer, adisyon kalanla açık kalır
+- **Bahşiş (havuz)** — %5 / %10 / %15 düğmeleri veya serbest tutar. Girilen bahşiş **havuza** yazılır; kimin ne alacağı Yönetim panelinde hesaplanır. Fişte toplamın altında ayrı satır olarak görünür
 - **Ödemeyi Al** → fiş görünür
 - Fişteki **🖨 Fişi Yazdır** ile termal yazıcıdan (80 mm) çıktı alabilirsin. Geçmiş bir adisyonun fişini yeniden yazdırmak için: **Gün Sonu → Adisyonlar → ilgili adisyon → Fişi Yazdır**
 
@@ -189,8 +219,8 @@ Garson ve mutfak birbirini canlı görür:
 - 📶 Uygulama çalışmak için internet ister. Bağlantı koptuğunda **Ayarlar → Şimdi eşitle** ile tekrar bağlanabilirsin.
 - 🔒 Güvenlik için başlangıç PIN'lerini kendi belirlediğin PIN'lerle değiştirmen önerilir. Bir cihaz kaybolursa **Ayarlar → Cihaz bağlantısını kes** ile o cihazın erişimini kapat.
 - 🔄 **Güncellemeler otomatik gelir.** Uygulamayı her açtığında en güncel sürüm yüklenir.
-- 🏷️ Kullandığın **sürümü** görmek için: **Ayarlar** sekmesinin en altı (ör. `v0.2.0`).
-- 🧭 Sistem üç bölümden oluşur: **Servis** (`/servis`), **Mutfak** (`/kitchen`) ve ileride gelecek **Yönetim** paneli. Her biri ayrı ayrı ana ekrana eklenebilir.
+- 🏷️ Kullandığın **sürümü** görmek için: **Ayarlar** sekmesinin en altı (ör. `v0.3.0`).
+- 🧭 Sistem dört bölümden oluşur: **Servis** (`/servis`), **Mutfak** (`/kitchen`), **Yönetim** (`/yonetim`) ve bölüm seçimi (kök adres). Her biri ayrı ayrı ana ekrana eklenebilir.
 
 ---
 

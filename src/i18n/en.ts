@@ -359,4 +359,73 @@ export const en: Record<string, string> = {
 
   Yiyecek: 'Food',
   'İçecek': 'Drinks',
+
+  // ---- Bahşiş ve yönetim paneli (v0.3.0) ----
+  'Bahşiş (havuz)': 'Tip (pooled)',
+  'Bahşiş': 'Tip',
+  'Genel Toplam': 'Grand Total',
+  'Tahsil edilecek': 'To collect',
+  Tutar: 'Amount',
+
+  'Kârlılık': 'Profitability',
+  Alımlar: 'Purchases',
+  Rezervasyon: 'Reservations',
+  'Kârlılık, bahşiş havuzu, malzeme alımları ve rezervasyon':
+    'Profitability, tip pool, ingredient purchases and reservations',
+
+  Ciro: 'Revenue',
+  maliyet: 'cost',
+  'Brüt kâr': 'Gross profit',
+  Marj: 'Margin',
+  'Ürün bazında': 'By item',
+  'reçetesiz': 'no recipe',
+  'Cironun %{p}’inde maliyet bilinmiyor.': 'Cost unknown for {p}% of revenue.',
+  'Bu ürünlerin reçetesi girilmediği için maliyet 0 sayıldı; gerçek marj gösterilenden düşüktür.':
+    'These items have no recipe, so cost counted as 0 — the real margin is lower than shown.',
+
+  'HAVUZDAKİ BAHŞİŞ': 'TIPS IN POOL',
+  '{n} garson arasında paylaşılacak': 'To be shared among {n} servers',
+  'Bu aralıkta bahşiş girilmedi': 'No tips entered in this range',
+  'Dağıtım kuralı': 'Split rule',
+  'Adisyon sayısına göre': 'By check count',
+  'Eşit': 'Equal',
+  'topladığı': 'collected',
+  'Sektörde havuz genelde çalışılan saate göre bölünür. Vardiya takibi henüz olmadığı için adisyon sayısı yaklaşık ölçü olarak kullanılıyor — dağıtımı elle de yapabilirsin, buradaki rakam yol göstericidir.':
+    'Pools are usually split by hours worked. Shift tracking is not in place yet, so check count is used as an approximation — you can split manually; this figure is a guide.',
+  'Uygulama yalnızca girilen bahşişi kaydeder. Kartlı bahşişin gerçek tahsilatı POS/banka tarafındadır; mutabakat oradan yapılmalıdır.':
+    'The app only records entered tips. Card tips are actually settled by the POS/bank; reconcile there.',
+
+  'Alım Ekle': 'Add Purchase',
+  'Yeni alım': 'New purchase',
+  Miktar: 'Quantity',
+  'Miktar ({unit})': 'Quantity ({unit})',
+  'Ödenen toplam': 'Total paid',
+  'Tutar gir': 'Enter an amount',
+  'Tedarikçi': 'Supplier',
+  'Fatura / fiş no': 'Invoice / receipt no',
+  'Yeni birim maliyet': 'New unit cost',
+  'Şu anki': 'Current',
+  'Son alımlar': 'Recent purchases',
+  'Henüz alım kaydı yok': 'No purchases yet',
+  'Alım kaydedildi': 'Purchase saved',
+  'Bu alım kaydı silinsin mi? Malzemenin güncel maliyeti değişmez.':
+    'Delete this purchase record? The ingredient cost stays as it is.',
+  'Alım kaydedildiğinde malzemenin birim maliyeti güncellenir ve reçetelerden ürün maliyetlerine yayılır. Satılmış ürünlerin maliyeti satış anında dondurulduğu için geçmiş kâr bozulmaz.':
+    'Saving a purchase updates the ingredient unit cost and flows through recipes into item costs. Sold items keep the cost frozen at sale time, so past profit stays correct.',
+
+  'Rezervasyon Ekle': 'Add Reservation',
+  'Yeni rezervasyon': 'New reservation',
+  'Bu gün için rezervasyon yok': 'No reservations for this day',
+  '{n} rezervasyon · {g} kişi': '{n} reservations · {g} guests',
+  'Gün listesi': 'Day list',
+  'İsim gir': 'Enter a name',
+  'Saat gir': 'Enter a time',
+  Telefon: 'Phone',
+  'Masa no': 'Table no',
+  'Not — ör. doğum günü, pencere kenarı': 'Note — e.g. birthday, by the window',
+  'Rezervasyon silinsin mi?': 'Delete this reservation?',
+  Geldi: 'Seated',
+  Gelmedi: 'No-show',
+  'İptal': 'Cancelled',
+  'Vazgeç': 'Cancel',
 };

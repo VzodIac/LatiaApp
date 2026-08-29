@@ -43,6 +43,8 @@ export interface Payment {
   id: string;
   orderId: string;
   amount: number;
+  /** Bu tahsilatta alınan bahşiş — havuza gider */
+  tip: number;
   cost: number;
   method: PaymentMethod;
   staffName: string;
@@ -154,6 +156,8 @@ export interface Order {
   discountReason: string;
   /** Gerekçeye ek serbest açıklama */
   discountNote: string;
+  /** Adisyon boyunca toplanan bahşiş (havuza gider) */
+  tipTotal: number;
   splitCount: number;
 }
 
@@ -162,6 +166,41 @@ export interface Waiter {
   name: string;
   pin: string;
   role: string;
+}
+
+/** Malzeme alımı — maliyet girdisinin kaynağı (ileride e-fatura da buraya akar) */
+export interface Purchase {
+  id: string;
+  ingredientId: string | null;
+  ingredientName: string;
+  supplier: string | null;
+  docNo: string | null;
+  /** manual = elle/fiş girişi, efatura = entegratörden gelen */
+  source: 'manual' | 'efatura';
+  /** Temel birimde miktar (g / ml / adet) */
+  qty: number;
+  unit: string;
+  /** Ödenen toplam tutar */
+  total: number;
+  /** total / qty — malzemenin yeni birim maliyeti */
+  unitCost: number;
+  purchasedAt: number;
+  note: string | null;
+}
+
+export type ReservationStatus = 'booked' | 'seated' | 'noshow' | 'cancelled';
+
+/** Rezervasyon */
+export interface Reservation {
+  id: string;
+  guestName: string;
+  phone: string | null;
+  /** Rezervasyon zamanı */
+  reservedAt: number;
+  guestCount: number;
+  tableNo: number | null;
+  status: ReservationStatus;
+  note: string | null;
 }
 
 /** Uygulama ayarları */

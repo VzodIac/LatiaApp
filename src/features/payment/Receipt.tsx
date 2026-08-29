@@ -71,6 +71,13 @@ export function Receipt({ data }: { data: ReceiptData }) {
           <span>{fmt(data.amount)}</span>
         </div>
 
+        {data.tip > 0 && (
+          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 13.5, color: 'var(--good)', fontWeight: 600, marginBottom: 6 }}>
+            <span>{tr('Bahşiş (havuz)')}</span>
+            <span>{fmt(data.tip)}</span>
+          </div>
+        )}
+
         {!data.orderClosed && (
           <div style={{ fontSize: 12.5, color: 'var(--coral)', fontWeight: 600, textAlign: 'center', marginBottom: 14 }}>
             {tr('Adisyon açık kaldı — kalan ürünler ayrıca ödenecek')}
@@ -87,6 +94,7 @@ export function Receipt({ data }: { data: ReceiptData }) {
               method: data.method,
               waiter: data.waiter,
               paidAt: data.paidAt,
+              tip: data.tip,
               partial: !data.orderClosed,
             })
           }

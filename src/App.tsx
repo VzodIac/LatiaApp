@@ -21,18 +21,20 @@ import { MenuEditor } from './features/menu/MenuEditor';
 import { SettingsTab } from './features/settings/SettingsTab';
 import { KitchenScreen } from './features/kitchen/KitchenScreen';
 import { Hub } from './features/hub/Hub';
+import { ManagementScreen } from './features/management/ManagementScreen';
 import { SetupNeeded } from './features/setup/SetupNeeded';
 import { isConfigured } from './lib/supabase';
 
 /**
- * Uygulamanın üç yüzü ayrı adreslerde durur ki her biri ayrı bir PWA olarak
- * kurulabilsin: /servis (garson), /kitchen (mutfak), / (seçim ekranı;
- * ileride yönetim paneli). Eski ?mode=kitchen bağlantıları da çalışır.
+ * Uygulamanın dört yüzü ayrı adreslerde durur ki her biri ayrı bir PWA olarak
+ * kurulabilsin: /servis (garson), /kitchen (mutfak), /yonetim (yönetim) ve
+ * / (seçim ekranı). Eski ?mode=kitchen bağlantıları da çalışır.
  */
 const path = window.location.pathname;
 const isKitchenMode =
   path.startsWith('/kitchen') || new URLSearchParams(window.location.search).get('mode') === 'kitchen';
-const isHub = !isKitchenMode && !path.startsWith('/servis');
+const isManagement = path.startsWith('/yonetim');
+const isHub = !isKitchenMode && !isManagement && !path.startsWith('/servis');
 
 export function App() {
   const ready = useStore((s) => s.ready);
@@ -60,9 +62,9 @@ export function App() {
   // Telefon çerçevesi olmayan ekranlarda (seçim sayfası, mutfak) gövde arka
   // planı tema rengini alsın — aşırı kaydırmada masaüstü grisi sızmasın.
   useEffect(() => {
-    if (!isHub && !isKitchenMode) return;
+    if (!isHub && !isKitchenMode && !isManagement) return;
     const prev = document.body.style.background;
-    document.body.style.background = theme === 'dark' ? '#0E1826' : '#F3ECDD';
+    document.body.style.background = theme === 'dark' ? '#1A1513' : '#F7F2EC';
     return () => {
       document.body.style.background = prev;
     };
@@ -85,6 +87,31 @@ export function App() {
     return (
       <div className={`app ${theme === 'dark' ? 'dark' : 'light'}`} style={{ minHeight: '100dvh', background: 'var(--bg)' }}>
         <Hub />
+      </div>
+    );
+  }
+
+  // Yönetim paneli: maliyet, marj, bahşiş havuzu ve tedarikçi fiyatları
+  // burada durur — salondaki cihazlarda görünmemesi için ayrı adres.
+  if (isManagement) {
+    if (!ready) {
+      return (
+        <div className="app light" style={{ minHeight: '100dvh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'var(--bg)' }}>
+          <Logo height={44} variant="full" />
+        </div>
+      );
+    }
+    if (needsDeviceLogin) {
+      return (
+        <div className={`app ${theme === 'dark' ? 'dark' : 'light'}`} style={{ minHeight: '100dvh', position: 'relative', background: 'var(--bg)' }}>
+          <DeviceSetup onDone={() => void boot()} />
+        </div>
+      );
+    }
+    return (
+      <div className={`app ${theme === 'dark' ? 'dark' : 'light'}`}>
+        <ManagementScreen />
+        <Toast />
       </div>
     );
   }

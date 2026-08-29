@@ -17,6 +17,7 @@ export default defineConfig({
         main: resolve(__dirname, 'index.html'),
         servis: resolve(__dirname, 'servis.html'),
         kitchen: resolve(__dirname, 'kitchen.html'),
+        yonetim: resolve(__dirname, 'yonetim.html'),
       },
     },
   },
@@ -38,7 +39,7 @@ export default defineConfig({
       name: 'own-manifest-links',
       closeBundle() {
         // Kendi manifesti olan sayfalardan ana manifest bağlantısını kaldır
-        for (const name of ['kitchen.html', 'index.html']) {
+        for (const name of ['kitchen.html', 'yonetim.html', 'index.html']) {
           const file = resolve(__dirname, 'dist', name);
           if (!existsSync(file)) continue;
           const html = readFileSync(file, 'utf-8').replace(
@@ -56,8 +57,10 @@ export default defineConfig({
         'apple-touch-icon.png',
         'apple-touch-icon-kitchen.png',
         'apple-touch-icon-hub.png',
+        'apple-touch-icon-admin.png',
         'kitchen.webmanifest',
         'hub.webmanifest',
+        'admin.webmanifest',
       ],
       manifest: {
         id: '/servis',
@@ -65,8 +68,8 @@ export default defineConfig({
         short_name: 'Servis',
         description: 'La Tía servis ekranı — sipariş alma ve masa takibi',
         start_url: '/servis',
-        theme_color: '#1E4FA0',
-        background_color: '#F3ECDD',
+        theme_color: '#AA2632',
+        background_color: '#F7F2EC',
         display: 'standalone',
         orientation: 'portrait',
         lang: 'tr',
@@ -79,7 +82,7 @@ export default defineConfig({
       workbox: {
         globPatterns: ['**/*.{js,css,html,svg,png,woff2}'],
         // /kitchen isteği index.html'e düşerse mutfak yerine adisyon açılır
-        navigateFallbackDenylist: [/^\/kitchen/, /^\/servis/],
+        navigateFallbackDenylist: [/^\/kitchen/, /^\/servis/, /^\/yonetim/],
       },
     }),
   ],

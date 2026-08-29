@@ -4,6 +4,7 @@ import { newId } from '@/data/remote';
 import { getSession, signOutDevice } from '@/lib/supabase';
 import { computeTotals, unitCost, unitTotal } from '@/lib/totals';
 import { resolveRange } from '@/lib/report';
+import { startOfDay, endOfDay } from '@/lib/date';
 import { getLang, getStoredTheme, setStoredLang, setStoredTheme, t, type Lang } from '@/i18n';
 import { beep, systemNotify } from '@/lib/notify';
 import { parsePrice } from '@/lib/money';
@@ -12,6 +13,8 @@ import type {
   DiscountType,
   Extra,
   Ingredient,
+  Purchase,
+  Reservation,
   ItemStatus,
   MenuItem,
   Order,
@@ -36,6 +39,8 @@ export interface ReceiptData {
   /** Fişte yazacak satırlar — ödeme anındaki hâlleriyle saklanır */
   items: { name: string; qty: number; amount: number; extras: string[] }[];
   amount: number;
+  /** Bu tahsilatta alınan bahşiş */
+  tip: number;
   method: PaymentMethod;
   paidAt: number;
   orderClosed: boolean;
@@ -169,6 +174,9 @@ interface State {
   setPayQty: (uid: string, qty: number) => void;
   selectAllForPay: () => void;
   clearPaySelection: () => void;
+  /** Bu tahsilatta alınacak bahşiş — onaylanana kadar adisyona yazılmaz */
+  payTip: number;
+  setPayTip: (v: number) => void;
   setDiscount: (t: DiscountType) => void;
   setDiscountReason: (code: string) => void;
   setDiscountNote: (v: string) => void;
@@ -196,6 +204,20 @@ interface State {
   setItemStatus: (uid: string, status: ItemStatus) => Promise<void>;
 
   // ---- malzeme & reçete ----
+  // ---- yönetim paneli ----
+  purchases: Purchase[];
+  reservations: Reservation[];
+  /** Rezervasyon listesinin gösterildiği gün (gün başlangıcı) */
+  resDay: number;
+  mgmtLoading: boolean;
+  loadPurchases: () => Promise<void>;
+  addPurchase: (p: Purchase) => Promise<void>;
+  removePurchase: (id: string) => Promise<void>;
+  setResDay: (d: number) => void;
+  loadReservations: () => Promise<void>;
+  saveReservation: (r: Reservation) => Promise<void>;
+  removeReservation: (id: string) => Promise<void>;
+
   saveIngredient: (i: Ingredient) => Promise<void>;
   removeIngredient: (id: string) => Promise<void>;
   saveRecipeItem: (r: RecipeItem) => Promise<void>;
@@ -240,6 +262,7 @@ function blankOrder(p: Partial<Order> & Pick<Order, 'id' | 'kind' | 'label' | 'w
     discountType: 'none',
     discountReason: '',
     discountNote: '',
+    tipTotal: 0,
     splitCount: 1,
     ...p,
   };
@@ -377,6 +400,10 @@ export const useStore = create<State>((set, get) => {
     menuItems: [],
     extras: [],
     ingredients: [],
+    purchases: [],
+    reservations: [],
+    resDay: startOfDay(Date.now()),
+    mgmtLoading: false,
     recipes: [],
     waiters: [],
     tables: [],
@@ -400,6 +427,7 @@ export const useStore = create<State>((set, get) => {
     payOpen: false,
     payMode: 'all',
     paySelection: {},
+    payTip: 0,
     receipt: null,
 
     editor: null,
@@ -775,7 +803,7 @@ export const useStore = create<State>((set, get) => {
 
     // ---------- payment ----------
     openPay() {
-      set({ payOpen: true, payMode: 'all', paySelection: {} });
+      set({ payOpen: true, payMode: 'all', paySelection: {}, payTip: 0 });
     },
     closePay() {
       set({ payOpen: false });
@@ -814,6 +842,9 @@ export const useStore = create<State>((set, get) => {
     },
     clearPaySelection() {
       set({ paySelection: {} });
+    },
+    setPayTip(v) {
+      set({ payTip: Math.max(0, Math.round(v * 100) / 100) });
     },
     setDiscount(t) {
       const oid = get().orderOpen;
@@ -901,6 +932,7 @@ export const useStore = create<State>((set, get) => {
       const payCost = picks.reduce((a, p) => a + unitCost(p.it, s.extras) * p.qty, 0);
       const amount = Math.round(paySub * ratio * 100) / 100;
 
+      const tip = s.payTip;
       const staff = s.waiters.find((w) => w.name === s.settings.activeWaiter);
       const extraName = (id: string) => s.extras.find((x) => x.id === id)?.name ?? '';
 
@@ -909,6 +941,7 @@ export const useStore = create<State>((set, get) => {
           order: o,
           items: picks.map((p) => ({ uid: p.it.uid, qty: p.qty })),
           amount,
+          tip,
           cost: payCost,
           method: o.paymentMethod,
           staffId: staff?.id ?? null,
@@ -919,6 +952,7 @@ export const useStore = create<State>((set, get) => {
           payOpen: false,
           paySelection: {},
           payMode: 'all',
+          payTip: 0,
           orderOpen: orderClosed ? null : o.id,
           receipt: {
             orderId: o.id,
@@ -933,6 +967,7 @@ export const useStore = create<State>((set, get) => {
                 .filter(Boolean),
             })),
             amount,
+            tip,
             method: o.paymentMethod!,
             paidAt: Date.now(),
             orderClosed,
@@ -1126,6 +1161,71 @@ export const useStore = create<State>((set, get) => {
     },
 
     // ---------- malzeme & reçete ----------
+    async loadPurchases() {
+      set({ mgmtLoading: true });
+      try {
+        set({ purchases: await remote.loadPurchases() });
+      } catch (e) {
+        get().showToast(errText(e));
+      } finally {
+        set({ mgmtLoading: false });
+      }
+    },
+    async addPurchase(p) {
+      try {
+        await remote.savePurchase(p);
+        set((s) => ({ purchases: [p, ...s.purchases] }));
+        // Malzeme maliyeti değişti; ürün maliyetleri tetikleyiciyle güncellendi
+        await get().refresh();
+        get().showToast(t('Alım kaydedildi'));
+      } catch (e) {
+        get().showToast(errText(e));
+      }
+    },
+    async removePurchase(id) {
+      try {
+        await remote.deletePurchase(id);
+        set((s) => ({ purchases: s.purchases.filter((x) => x.id !== id) }));
+      } catch (e) {
+        get().showToast(errText(e));
+      }
+    },
+    setResDay(d) {
+      set({ resDay: startOfDay(d) });
+      void get().loadReservations();
+    },
+    async loadReservations() {
+      const day = get().resDay;
+      set({ mgmtLoading: true });
+      try {
+        set({ reservations: await remote.loadReservations(day, endOfDay(day)) });
+      } catch (e) {
+        get().showToast(errText(e));
+      } finally {
+        set({ mgmtLoading: false });
+      }
+    },
+    async saveReservation(r) {
+      try {
+        await remote.saveReservation(r);
+        set((s) => ({
+          reservations: s.reservations.some((x) => x.id === r.id)
+            ? s.reservations.map((x) => (x.id === r.id ? r : x))
+            : [...s.reservations, r].sort((a, b) => a.reservedAt - b.reservedAt),
+        }));
+      } catch (e) {
+        get().showToast(errText(e));
+      }
+    },
+    async removeReservation(id) {
+      try {
+        await remote.deleteReservation(id);
+        set((s) => ({ reservations: s.reservations.filter((x) => x.id !== id) }));
+      } catch (e) {
+        get().showToast(errText(e));
+      }
+    },
+
     async saveIngredient(i) {
       try {
         await remote.saveIngredient(i);

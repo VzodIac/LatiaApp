@@ -8,7 +8,9 @@ import type {
   Order,
   OrderItem,
   PaymentMethod,
+  Purchase,
   RecipeItem,
+  Reservation,
   SelectedExtra,
   Settings,
   Station,
@@ -150,6 +152,7 @@ function toOrder(r: Row, items: OrderItem[]): Order {
     discountType: (r.discount_type as Order['discountType']) ?? 'none',
     discountReason: (r.discount_reason as string) ?? '',
     discountNote: (r.discount_note as string) ?? '',
+    tipTotal: num(r.tip_total),
     splitCount: num(r.split_count, 1),
   };
 }
@@ -328,6 +331,7 @@ export async function saveOrder(order: Order, totals: { sub: number; disc: numbe
     discount_amount: totals.disc,
     total: totals.total,
     total_cost: totals.cost,
+    tip_total: order.tipTotal,
     split_count: order.splitCount,
     updated_at: new Date().toISOString(),
   });
@@ -524,6 +528,8 @@ export async function payItems(args: {
   /** Ödenecek satırlar ve adetleri (adet satırın tamamından az olabilir) */
   items: { uid: string; qty: number }[];
   amount: number;
+  /** Bu tahsilatta alınan bahşiş — havuza gider */
+  tip: number;
   cost: number;
   method: PaymentMethod;
   staffId: string | null;
@@ -537,12 +543,21 @@ export async function payItems(args: {
     business_id: bid,
     order_id: args.order.id,
     amount: args.amount,
+    tip: args.tip,
     cost: args.cost,
     method: args.method,
     staff_id: args.staffId,
     staff_name: args.staffName,
   });
   if (pErr) throw new Error(`Ödeme kaydedilemedi: ${pErr.message}`);
+
+  // Adisyonun bahşiş toplamı rapor kolaylığı için orders üzerinde de tutulur
+  if (args.tip > 0) {
+    await supabase
+      .from('orders')
+      .update({ tip_total: args.order.tipTotal + args.tip })
+      .eq('id', args.order.id);
+  }
 
   // Tamamı ödenen satırlar doğrudan ödemeye bağlanır
   const fullUids: string[] = [];
@@ -716,4 +731,139 @@ export function subscribeToOrders(onChange: () => void) {
   return () => {
     void supabase.removeChannel(channel);
   };
+}
+
+// ---------------------------------------------------------------------------
+// Yönetim paneli — alımlar ve rezervasyon
+// ---------------------------------------------------------------------------
+
+function toPurchase(r: Row): Purchase {
+  return {
+    id: String(r.id),
+    ingredientId: (r.ingredient_id as string) ?? null,
+    ingredientName: String(r.ingredient_name),
+    supplier: (r.supplier as string) ?? null,
+    docNo: (r.doc_no as string) ?? null,
+    source: (r.source as Purchase['source']) ?? 'manual',
+    qty: num(r.qty),
+    unit: (r.unit as string) ?? 'g',
+    total: num(r.total),
+    unitCost: num(r.unit_cost),
+    purchasedAt: ts(r.purchased_at) ?? Date.now(),
+    note: (r.note as string) ?? null,
+  };
+}
+
+function toReservation(r: Row): Reservation {
+  return {
+    id: String(r.id),
+    guestName: String(r.guest_name),
+    phone: (r.phone as string) ?? null,
+    reservedAt: ts(r.reserved_at) ?? Date.now(),
+    guestCount: num(r.guest_count, 2),
+    tableNo: r.table_no == null ? null : num(r.table_no),
+    status: (r.status as Reservation['status']) ?? 'booked',
+    note: (r.note as string) ?? null,
+  };
+}
+
+/** Son alımlar (varsayılan 90 gün) */
+export async function loadPurchases(days = 90): Promise<Purchase[]> {
+  const bid = await loadBusinessId();
+  const since = new Date(Date.now() - days * 86400000).toISOString();
+  const { data, error } = await supabase
+    .from('purchases')
+    .select('*')
+    .eq('business_id', bid)
+    .gte('purchased_at', since)
+    .order('purchased_at', { ascending: false });
+  if (error) throw new Error(`Alımlar yüklenemedi: ${error.message}`);
+  return (data ?? []).map(toPurchase);
+}
+
+/**
+ * Alımı kaydeder ve malzemenin birim maliyetini günceller.
+ *
+ * Maliyet güncellemesi geriye dönük DEĞİLDİR: satılmış ürünlerin maliyeti
+ * satış anında dondurulduğu için geçmiş marj olduğu gibi kalır; yeni fiyat
+ * yalnızca bundan sonraki satışlara yansır.
+ */
+export async function savePurchase(p: Purchase): Promise<void> {
+  const bid = await loadBusinessId();
+
+  const { error } = await supabase.from('purchases').insert({
+    id: p.id,
+    business_id: bid,
+    ingredient_id: p.ingredientId,
+    ingredient_name: p.ingredientName,
+    supplier: p.supplier,
+    doc_no: p.docNo,
+    source: p.source,
+    qty: p.qty,
+    unit: p.unit,
+    total: p.total,
+    unit_cost: p.unitCost,
+    purchased_at: iso(p.purchasedAt),
+    note: p.note,
+  });
+  if (error) throw new Error(`Alım kaydedilemedi: ${error.message}`);
+
+  if (!p.ingredientId) return;
+
+  // Malzemenin güncel maliyeti = son alımın birim maliyeti.
+  // Bu tetikleyici üzerinden reçetelere ve ürün maliyetlerine yayılır.
+  const { error: uErr } = await supabase
+    .from('ingredients')
+    .update({ cost_per_unit: p.unitCost, updated_at: new Date().toISOString() })
+    .eq('id', p.ingredientId);
+  if (uErr) throw new Error(`Malzeme maliyeti güncellenemedi: ${uErr.message}`);
+
+  // Zam/indirim tarihçesi
+  await supabase.from('ingredient_price_history').insert({
+    ingredient_id: p.ingredientId,
+    cost_per_unit: p.unitCost,
+    valid_from: iso(p.purchasedAt),
+    note: p.supplier ? `Alım — ${p.supplier}` : 'Alım',
+  });
+}
+
+export async function deletePurchase(id: string): Promise<void> {
+  const { error } = await supabase.from('purchases').delete().eq('id', id);
+  if (error) throw new Error(`Alım silinemedi: ${error.message}`);
+}
+
+/** Verilen gün aralığındaki rezervasyonlar */
+export async function loadReservations(from: number, to: number): Promise<Reservation[]> {
+  const bid = await loadBusinessId();
+  const { data, error } = await supabase
+    .from('reservations')
+    .select('*')
+    .eq('business_id', bid)
+    .gte('reserved_at', new Date(from).toISOString())
+    .lte('reserved_at', new Date(to).toISOString())
+    .order('reserved_at');
+  if (error) throw new Error(`Rezervasyonlar yüklenemedi: ${error.message}`);
+  return (data ?? []).map(toReservation);
+}
+
+export async function saveReservation(r: Reservation): Promise<void> {
+  const bid = await loadBusinessId();
+  const { error } = await supabase.from('reservations').upsert({
+    id: r.id,
+    business_id: bid,
+    guest_name: r.guestName,
+    phone: r.phone,
+    reserved_at: iso(r.reservedAt),
+    guest_count: r.guestCount,
+    table_no: r.tableNo,
+    status: r.status,
+    note: r.note,
+    updated_at: new Date().toISOString(),
+  });
+  if (error) throw new Error(`Rezervasyon kaydedilemedi: ${error.message}`);
+}
+
+export async function deleteReservation(id: string): Promise<void> {
+  const { error } = await supabase.from('reservations').delete().eq('id', id);
+  if (error) throw new Error(`Rezervasyon silinemedi: ${error.message}`);
 }

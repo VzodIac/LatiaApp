@@ -56,6 +56,8 @@ export interface ReceiptPayload {
   amount: number;
   subtotal?: number;
   discount?: number;
+  /** Alınan bahşiş — fişte toplamın altında ayrı satır */
+  tip?: number;
   method: 'cash' | 'card' | null;
   waiter: string;
   paidAt: number;
@@ -127,6 +129,12 @@ function receiptHtml(p: ReceiptPayload, opts: PrintOptions): string {
   ${subtotalRow}
   ${discountRow}
   <div class="grand"><span>${esc(t('Toplam'))}</span><span>${esc(fmt(p.amount))}</span></div>
+  ${
+    p.tip && p.tip > 0
+      ? `<div class="row total-row"><span>${esc(t('Bahşiş'))}</span><span>${esc(fmt(p.tip))}</span></div>
+         <div class="grand"><span>${esc(t('Genel Toplam'))}</span><span>${esc(fmt(p.amount + p.tip))}</span></div>`
+      : ''
+  }
 
   <div class="center footer">
     ${opts.footer ? esc(opts.footer) + '<br>' : ''}

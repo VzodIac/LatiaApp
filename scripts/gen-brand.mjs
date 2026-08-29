@@ -18,6 +18,7 @@ mkdirSync(iconDir, { recursive: true });
 
 const BRAND = '#AA2632'; // logodan örneklenen bordo
 const IVORY = '#F7F2EC'; // sıcak fildişi
+const CLAY = '#C4763E';  // terracotta — yönetim paneli
 const DARK = '#1A1513';
 
 // Sayfadaki logo bloğu (kenar botanik süsleri hariç)
@@ -102,3 +103,8 @@ await icon(180, { bg: IVORY, fg: BRAND, radius: 0 }, resolve(pub, 'apple-touch-i
 await icon(192, { bg: DARK, fg: IVORY }, resolve(iconDir, 'hub-192.png'));
 await icon(512, { bg: DARK, fg: IVORY }, resolve(iconDir, 'hub-512.png'));
 await icon(180, { bg: DARK, fg: IVORY, radius: 0 }, resolve(pub, 'apple-touch-icon-hub.png'));
+
+// Yönetim paneli — terracotta zemin
+await icon(192, { bg: CLAY, fg: IVORY }, resolve(iconDir, 'admin-192.png'));
+await icon(512, { bg: CLAY, fg: IVORY }, resolve(iconDir, 'admin-512.png'));
+await icon(180, { bg: CLAY, fg: IVORY, radius: 0 }, resolve(pub, 'apple-touch-icon-admin.png'));

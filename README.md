@@ -30,6 +30,7 @@ Kurulduktan sonra üç bölüm ayrı birer PWA olarak eklenebilir:
 - İndirim/ikram (%10 / %15 / ikram) — kısmi ödemelerde oransal yansır
 - **İkram gerekçesi zorunlu:** sabit sebep listesi (tanıdık, şikayet, personel yemeği…) + serbest açıklama; gerekçesiz hesap kapanmaz
 - **Kişi sayısı:** adisyon başına misafir sayısı — kişi başı harcama analizinin girdisi
+- **Bahşiş (havuz modeli):** ödeme anında %5/%10/%15 veya serbest tutar; havuz yönetim panelinde paylaştırılır
 - Eşit bölme, nakit/kart, fiş ekranı
 
 **Menü & maliyet**

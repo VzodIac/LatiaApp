@@ -1,0 +1,18 @@
+{
+  "id": "/yonetim",
+  "name": "La Tía Yönetim",
+  "short_name": "Yönetim",
+  "description": "La Tía yönetim paneli — kârlılık, bahşiş, alımlar ve rezervasyon",
+  "start_url": "/yonetim",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "lang": "tr",
+  "theme_color": "#C4763E",
+  "background_color": "#F7F2EC",
+  "icons": [
+    { "src": "/icons/admin-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/icons/admin-512.png", "sizes": "512x512", "type": "image/png" },
+    { "src": "/icons/admin-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
