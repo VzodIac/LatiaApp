@@ -111,7 +111,11 @@ Bunu da **ana ekrana ekle** — ayrı bir uygulama olarak kurulur (terracotta ik
 
 Dört bölümü var:
 
-**Kârlılık** — Seçili tarih aralığında ciro, maliyet, brüt kâr ve marj; altında ürün bazında döküm (en çok kazandırandan başlayarak).
+**Kârlılık** — Seçili tarih aralığında ciro, maliyet, **net kâr** ve marj; altında **günlük ciro–net kâr grafiği** ve iki ayrı döküm: **Ürün bazında** (en çok kazandırandan başlayarak) ve **Gün bazında**.
+
+İkram ve indirim satırlara oransal dağıtılır — tamamen ikram edilen bir adisyon ciro yazmaz ama maliyeti yazar, yani o günün kârını düşürür. Doğru olan da budur.
+
+> **Net kâr = ciro − ikram/indirim − ürün maliyeti.** Kira, maaş ve fatura gibi sabit giderler dahil değildir; bunlar sistemde tutulmuyor.
 
 > Reçetesi girilmemiş ürünler **"reçetesiz"** olarak işaretlenir ve maliyeti 0 sayılır — yani marjları olduğundan yüksek görünür. Üstteki uyarı, cironun yüzde kaçında maliyetin bilinmediğini söyler. Bu oran yüksekse rakama güvenme, önce reçeteleri gir.
 
@@ -121,13 +125,19 @@ Dört bölümü var:
 >
 > ⚠️ Uygulama yalnızca **girilen** bahşişi bilir. Kartlı bahşişin gerçek tahsilatı POS/banka tarafındadır; ay sonu mutabakatını oradan yap.
 
-**Alımlar** — Malzeme alımı gir: malzeme, miktar, ödenen toplam, tedarikçi, fatura/fiş no ve tarih. Kaydetmeden önce **hesaplanan birim maliyeti** gösterir; kilo yerine gram girmek gibi hatalar burada yakalanır.
+**Alımlar** — Önce **📷 Fiş fotoğrafı çek** ile fişi çek (telefonda doğrudan kamera açılır), sonra malzeme, miktar, ödenen toplam, tedarikçi, fatura/fiş no ve tarihi gir. Kaydetmeden önce **hesaplanan birim maliyeti** gösterir; kilo yerine gram girmek gibi hatalar burada yakalanır.
+
+> Fiş, alım kaydına iliştirilip arşivlenir; listeden **📷 Fiş** bağlantısıyla açabilirsin. **Fişten bilgileri otomatik okuma henüz devrede değil** — tutarları şimdilik elle giriyorsun. Fotoğrafın şimdiden saklanmasının sebebi şu: okuma devreye girdiğinde geçmiş fişler de işlenebilir, bu arada belge kayıt altında kalır.
 
 Alım kaydedilince malzemenin birim maliyeti güncellenir, fiyat geçmişine yazılır ve reçeteler üzerinden ürün maliyetlerine yayılır. **Geçmiş bozulmaz:** satılmış ürünlerin maliyeti satış anında dondurulduğu için eski kârlılık aynı kalır, yeni fiyat yalnızca bundan sonraki satışlara yansır.
 
 > Bu, e-fatura entegrasyonunun ilk adımıdır. Entegratör bağlandığında faturalar aynı listeye düşecek; şimdiden burada veri toplamak, hangi tedarikçiden ne aldığınızın kaydını çıkarır.
 
-**Rezervasyon** — Gün seçip rezervasyon ekle (isim, saat, kişi, telefon, masa, not). Her kaydın durumu tek dokunuşla değişir: **Bekliyor → Geldi / Gelmedi / İptal**. Üstte o günün toplam rezervasyon ve kişi sayısı görünür.
+**Rezervasyon** — Gün seçip rezervasyon ekle: isim, saat, **süre** (60–180 dk), kişi, telefon, **masa** ve not. Masa listesi salondan gelir; o saatte dolu olan masalar listede **seçilemez** ve yanında kimin tuttuğu yazar.
+
+> Aynı masaya çakışan saatte ikinci rezervasyon verilemez. Kontrol yalnızca ekranda değil **veritabanında** da var — iki kişi aynı anda kaydetmeye çalışsa bile ikincisi reddedilir. İptal ve "gelmedi" durumundaki kayıtlar masayı işgal etmez.
+
+Her kaydın durumu tek dokunuşla değişir: **Bekliyor → Geldi / Gelmedi / İptal**. Üstte o günün toplam rezervasyon ve kişi sayısı görünür.
 
 ---
 
@@ -219,7 +229,7 @@ Garson ve mutfak birbirini canlı görür:
 - 📶 Uygulama çalışmak için internet ister. Bağlantı koptuğunda **Ayarlar → Şimdi eşitle** ile tekrar bağlanabilirsin.
 - 🔒 Güvenlik için başlangıç PIN'lerini kendi belirlediğin PIN'lerle değiştirmen önerilir. Bir cihaz kaybolursa **Ayarlar → Cihaz bağlantısını kes** ile o cihazın erişimini kapat.
 - 🔄 **Güncellemeler otomatik gelir.** Uygulamayı her açtığında en güncel sürüm yüklenir.
-- 🏷️ Kullandığın **sürümü** görmek için: **Ayarlar** sekmesinin en altı (ör. `v0.3.0`).
+- 🏷️ Kullandığın **sürümü** görmek için: **Ayarlar** sekmesinin en altı (ör. `v0.4.0`).
 - 🧭 Sistem dört bölümden oluşur: **Servis** (`/servis`), **Mutfak** (`/kitchen`), **Yönetim** (`/yonetim`) ve bölüm seçimi (kök adres). Her biri ayrı ayrı ana ekrana eklenebilir.
 
 ---

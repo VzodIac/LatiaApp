@@ -428,4 +428,27 @@ export const en: Record<string, string> = {
   Gelmedi: 'No-show',
   'İptal': 'Cancelled',
   'Vazgeç': 'Cancel',
+
+  // ---- Kârlılık, rezervasyon ve fiş (v0.4.0) ----
+  'Net kâr': 'Net profit',
+  'Brüt satış': 'Gross sales',
+  'ikram/indirim': 'comps/discounts',
+  ciro: 'revenue',
+  'Net kâr = ciro − ikram/indirim − ürün maliyeti. Kira, maaş ve fatura gibi sabit giderler dahil değildir.':
+    'Net profit = revenue − comps/discounts − item cost. Fixed costs like rent, wages and utilities are not included.',
+  'Gün bazında': 'By day',
+  'Günlük ciro ve net kâr': 'Daily revenue and net profit',
+  'Son {n} gün gösteriliyor': 'Showing the last {n} days',
+
+  'Masa seç (isteğe bağlı)': 'Select a table (optional)',
+  'kişilik': 'seats',
+  dolu: 'booked',
+  '{table} · {time} — {name} rezervasyonu var': '{table} · {time} — already booked by {name}',
+  'Bu masa seçilen saatte zaten dolu.': 'That table is already booked at the selected time.',
+
+  'Fiş fotoğrafı çek': 'Photograph receipt',
+  'Fiş': 'Receipt',
+  'Kaydediliyor…': 'Saving…',
+  'Fiş alım kaydına eklenir ve arşivlenir. Fişten bilgileri otomatik okuma henüz devrede değil — tutarları şimdilik elle gir.':
+    'The receipt is attached to the purchase and archived. Automatic reading is not active yet — enter the amounts manually for now.',
 };

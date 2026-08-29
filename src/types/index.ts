@@ -186,6 +186,8 @@ export interface Purchase {
   unitCost: number;
   purchasedAt: number;
   note: string | null;
+  /** Fiş fotoğrafının depolama yolu — otomatik okuma devreye girince kaynak bu olacak */
+  receiptPath: string | null;
 }
 
 export type ReservationStatus = 'booked' | 'seated' | 'noshow' | 'cancelled';
@@ -199,6 +201,8 @@ export interface Reservation {
   reservedAt: number;
   guestCount: number;
   tableNo: number | null;
+  /** Masanın ne kadar süre tutulacağı — çakışma bu pencereye göre hesaplanır */
+  durationMin: number;
   status: ReservationStatus;
   note: string | null;
 }

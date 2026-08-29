@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useStore } from '@/store/useStore';
-import { newId } from '@/data/remote';
+import { newId, uploadReceipt, receiptUrl } from '@/data/remote';
 import { fmt } from '@/lib/money';
 import { parsePrice } from '@/lib/money';
 import { formatShortDate, toDateInput, fromDateInput } from '@/lib/date';
@@ -32,6 +32,10 @@ export function PurchasesView() {
   const [qty, setQty] = useState('');
   const [total, setTotal] = useState('');
   const [date, setDate] = useState(() => toDateInput(Date.now()));
+  const [receipt, setReceipt] = useState<File | null>(null);
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
+  const [saving, setSaving] = useState(false);
+  const fileRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
     void load();
@@ -48,30 +52,56 @@ export function PurchasesView() {
     setDocNo('');
     setQty('');
     setTotal('');
+    if (receiptPreview) URL.revokeObjectURL(receiptPreview);
+    setReceipt(null);
+    setReceiptPreview(null);
     setOpen(false);
   };
 
-  const submit = () => {
+  const pickReceipt = (f: File | null) => {
+    if (receiptPreview) URL.revokeObjectURL(receiptPreview);
+    setReceipt(f);
+    setReceiptPreview(f ? URL.createObjectURL(f) : null);
+  };
+
+  const submit = async () => {
     if (!ing) return showToast(tr('Malzeme seç'));
     if (qtyNum <= 0) return showToast(tr('Miktar gir'));
     if (totalNum <= 0) return showToast(tr('Tutar gir'));
 
-    const p: Purchase = {
-      id: newId(),
-      ingredientId: ing.id,
-      ingredientName: ing.name,
-      supplier: supplier.trim() || null,
-      docNo: docNo.trim() || null,
-      source: 'manual',
-      qty: qtyNum,
-      unit: ing.unit,
-      total: totalNum,
-      unitCost: Math.round(unitCost * 10000) / 10000,
-      purchasedAt: fromDateInput(date),
-      note: null,
-    };
-    void addPurchase(p);
-    reset();
+    setSaving(true);
+    try {
+      // Fiş fotoğrafı varsa önce yüklenir; yükleme başarısızsa alım yine de
+      // kaydedilir — fotoğraf yüzünden veri girişi kaybolmamalı.
+      let path: string | null = null;
+      if (receipt) {
+        try {
+          path = await uploadReceipt(receipt);
+        } catch (e) {
+          showToast(e instanceof Error ? e.message : String(e));
+        }
+      }
+
+      const p: Purchase = {
+        id: newId(),
+        ingredientId: ing.id,
+        ingredientName: ing.name,
+        supplier: supplier.trim() || null,
+        docNo: docNo.trim() || null,
+        source: 'manual',
+        qty: qtyNum,
+        unit: ing.unit,
+        total: totalNum,
+        unitCost: Math.round(unitCost * 10000) / 10000,
+        purchasedAt: fromDateInput(date),
+        note: null,
+        receiptPath: path,
+      };
+      await addPurchase(p);
+      reset();
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -83,6 +113,68 @@ export function PurchasesView() {
       ) : (
         <div style={card}>
           <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--fg)', marginBottom: 12 }}>{tr('Yeni alım')}</div>
+
+          {/* Fiş fotoğrafı.
+              Otomatik okuma (OCR / e-fatura) henüz bağlı değil; fotoğraf
+              alımla birlikte arşivleniyor, böylece okuma devreye girdiğinde
+              geçmiş fişler de işlenebilir ve bu arada belge kayıt altında kalır. */}
+          <input
+            ref={fileRef}
+            type="file"
+            accept="image/*"
+            capture="environment"
+            onChange={(e) => pickReceipt(e.target.files?.[0] ?? null)}
+            style={{ display: 'none' }}
+          />
+
+          {receiptPreview ? (
+            <div style={{ position: 'relative', marginBottom: 11 }}>
+              <img
+                src={receiptPreview}
+                alt={tr('Fiş')}
+                style={{ width: '100%', maxHeight: 220, objectFit: 'cover', borderRadius: 12, border: '1px solid var(--line)' }}
+              />
+              <button
+                onClick={() => pickReceipt(null)}
+                style={{
+                  position: 'absolute',
+                  top: 8,
+                  right: 8,
+                  width: 30,
+                  height: 30,
+                  borderRadius: 15,
+                  background: 'rgba(0,0,0,.6)',
+                  color: '#fff',
+                  fontSize: 17,
+                  fontWeight: 700,
+                }}
+                aria-label={tr('Kaldır')}
+              >
+                ×
+              </button>
+            </div>
+          ) : (
+            <button
+              onClick={() => fileRef.current?.click()}
+              style={{
+                width: '100%',
+                padding: '14px 12px',
+                borderRadius: 12,
+                border: '1.5px dashed var(--accent)',
+                background: 'transparent',
+                color: 'var(--accent)',
+                fontSize: 13.5,
+                fontWeight: 600,
+                marginBottom: 11,
+              }}
+            >
+              📷 {tr('Fiş fotoğrafı çek')}
+            </button>
+          )}
+
+          <div style={{ fontSize: 11, color: 'var(--muted)', lineHeight: 1.5, marginBottom: 12 }}>
+            {tr('Fiş alım kaydına eklenir ve arşivlenir. Fişten bilgileri otomatik okuma henüz devrede değil — tutarları şimdilik elle gir.')}
+          </div>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: 9 }}>
             <select value={ingId} onChange={(e) => setIngId(e.target.value)} style={input}>
@@ -143,8 +235,8 @@ export function PurchasesView() {
             <button onClick={reset} style={{ flex: 1, padding: 12, borderRadius: 12, border: '1px solid var(--line)', color: 'var(--fg)', fontSize: 13.5, fontWeight: 600, background: 'transparent' }}>
               {tr('Vazgeç')}
             </button>
-            <button onClick={submit} style={{ ...primaryBtn, flex: 1, width: 'auto' }}>
-              {tr('Kaydet')}
+            <button onClick={() => void submit()} disabled={saving} style={{ ...primaryBtn, flex: 1, width: 'auto', opacity: saving ? 0.6 : 1 }}>
+              {saving ? tr('Kaydediliyor…') : tr('Kaydet')}
             </button>
           </div>
         </div>
@@ -174,7 +266,10 @@ export function PurchasesView() {
               }}
             >
               <div style={{ flex: 1, minWidth: 0 }}>
-                <div style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--fg)' }}>{p.ingredientName}</div>
+                <div style={{ fontSize: 13.5, fontWeight: 600, color: 'var(--fg)' }}>
+                  {p.ingredientName}
+                  {p.receiptPath && <ReceiptLink path={p.receiptPath} />}
+                </div>
                 <div style={{ fontSize: 11, color: 'var(--fg2)', marginTop: 2 }}>
                   {formatShortDate(p.purchasedAt)} · {p.qty} {p.unit}
                   {p.supplier && ` · ${p.supplier}`}
@@ -201,5 +296,25 @@ export function PurchasesView() {
         </div>
       )}
     </>
+  );
+}
+
+/** Arşivlenmiş fişi kısa ömürlü imzalı bağlantıyla açar */
+function ReceiptLink({ path }: { path: string }) {
+  const tr = useT();
+  const [busy, setBusy] = useState(false);
+
+  return (
+    <button
+      onClick={async () => {
+        setBusy(true);
+        const url = await receiptUrl(path);
+        setBusy(false);
+        if (url) window.open(url, '_blank', 'noopener');
+      }}
+      style={{ fontSize: 11, fontWeight: 600, color: 'var(--accent)', marginLeft: 7 }}
+    >
+      {busy ? '…' : `📷 ${tr('Fiş')}`}
+    </button>
   );
 }

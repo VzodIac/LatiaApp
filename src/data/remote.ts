@@ -774,6 +774,7 @@ function toPurchase(r: Row): Purchase {
     unitCost: num(r.unit_cost),
     purchasedAt: ts(r.purchased_at) ?? Date.now(),
     note: (r.note as string) ?? null,
+    receiptPath: (r.receipt_path as string) ?? null,
   };
 }
 
@@ -785,6 +786,7 @@ function toReservation(r: Row): Reservation {
     reservedAt: ts(r.reserved_at) ?? Date.now(),
     guestCount: num(r.guest_count, 2),
     tableNo: r.table_no == null ? null : num(r.table_no),
+    durationMin: num(r.duration_min, 90),
     status: (r.status as Reservation['status']) ?? 'booked',
     note: (r.note as string) ?? null,
   };
@@ -828,6 +830,7 @@ export async function savePurchase(p: Purchase): Promise<void> {
     unit_cost: p.unitCost,
     purchased_at: iso(p.purchasedAt),
     note: p.note,
+    receipt_path: p.receiptPath,
   });
   if (error) throw new Error(`Alım kaydedilemedi: ${error.message}`);
 
@@ -879,14 +882,54 @@ export async function saveReservation(r: Reservation): Promise<void> {
     reserved_at: iso(r.reservedAt),
     guest_count: r.guestCount,
     table_no: r.tableNo,
+    duration_min: r.durationMin,
     status: r.status,
     note: r.note,
     updated_at: new Date().toISOString(),
   });
+  // 23P01 = exclusion_violation: aynı masa aynı zaman aralığında dolu.
+  // Kontrol veritabanında da var; iki cihaz aynı anda kaydederse arayüz
+  // kontrolü yetmez.
+  if (error?.code === '23P01') throw new Error('Bu masa seçilen saatte zaten dolu.');
   if (error) throw new Error(`Rezervasyon kaydedilemedi: ${error.message}`);
 }
 
 export async function deleteReservation(id: string): Promise<void> {
   const { error } = await supabase.from('reservations').delete().eq('id', id);
   if (error) throw new Error(`Rezervasyon silinemedi: ${error.message}`);
+}
+
+// ---------------------------------------------------------------------------
+// Fiş fotoğrafları
+//
+// Fotoğraf gizli bir depolama kovasında durur; satırda yalnızca yolu tutulur.
+// Otomatik okuma (OCR / e-fatura) henüz bağlı değil — fotoğrafı şimdiden
+// arşivlemek, okuma devreye girdiğinde geçmiş fişlerin de işlenebilmesini
+// sağlar ve bu arada faturanın kendisi kayıt altında kalır.
+// ---------------------------------------------------------------------------
+const RECEIPT_BUCKET = 'receipts';
+
+/** Fişi yükler, depolama yolunu döner */
+export async function uploadReceipt(file: File): Promise<string> {
+  const bid = await loadBusinessId();
+  const ext = (file.name.split('.').pop() || 'jpg').toLowerCase().slice(0, 5);
+  const path = `${bid}/${new Date().toISOString().slice(0, 10)}/${newId()}.${ext}`;
+
+  const { error } = await supabase.storage.from(RECEIPT_BUCKET).upload(path, file, {
+    contentType: file.type || 'image/jpeg',
+    upsert: false,
+  });
+  if (error) throw new Error(`Fiş yüklenemedi: ${error.message}`);
+  return path;
+}
+
+/** Gizli kovadaki fişi görüntülemek için kısa ömürlü bağlantı üretir */
+export async function receiptUrl(path: string, seconds = 300): Promise<string | null> {
+  const { data, error } = await supabase.storage.from(RECEIPT_BUCKET).createSignedUrl(path, seconds);
+  if (error) return null;
+  return data.signedUrl;
+}
+
+export async function deleteReceipt(path: string): Promise<void> {
+  await supabase.storage.from(RECEIPT_BUCKET).remove([path]);
 }
