@@ -470,4 +470,11 @@ export const en: Record<string, string> = {
     'There are no categories yet, so items cannot be added. Add a category below (e.g. “Mains”), then use “+ Item”.',
   'Hazır menü kurulmuş olması gerekiyorsa Ayarlar’daki işletme adını kontrol et — veritabanında birden fazla işletme varsa menü diğerine kurulmuş olabilir.':
     'If a menu should already be installed, check the business name in Settings — if the database holds more than one business, the menu may have been installed on the other one.',
+
+  // ---- Boş salon uyarısı (v0.5.2) ----
+  'Masa tanımlı değil': 'No tables defined',
+  'Bu işletmeye hiç masa kurulmamış. Ayarlar’ın en altındaki işletme adını kontrol et — veritabanında birden fazla işletme varsa masalar diğerine kurulmuş olabilir.':
+    'No tables were set up for this business. Check the business name at the bottom of Settings — if the database holds more than one business, the tables may have been created on the other one.',
+  'Bu arada sağ üstteki “+ Yeni” ile isim veya paket adisyonu açabilirsin.':
+    'In the meantime you can open a name or takeaway check with “+ New” at the top right.',
 };

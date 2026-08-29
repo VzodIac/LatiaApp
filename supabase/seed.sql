@@ -29,7 +29,10 @@ begin
   -- işletme satırı varsa (ör. Around'un seed'i çalıştırıldıysa) ikinci bir
   -- işletme yaratmak yanlış olur: uygulama hangisine bağlanacağını bilemez ve
   -- menü değişiklikleri görünmez. Var olanı yeniden adlandırıyoruz.
-  select id into b_id from businesses where name = 'La Tía' limit 1;
+  -- Sıralama önemli: uygulama da "adı La Tía olanların en eskisi" diyor.
+  -- Sırasız limit 1, birden fazla kayıtta seed ile uygulamanın farklı
+  -- işletmelere bakmasına yol açıyordu.
+  select id into b_id from businesses where name = 'La Tía' order by created_at limit 1;
   if b_id is null then
     select id into b_id from businesses order by created_at limit 1;
     if b_id is null then
@@ -50,6 +53,15 @@ begin
   insert into settings (business_id, theme, table_count)
   values (b_id, 'light', 10)
   on conflict (business_id) do nothing;
+
+  -- ---- Masalar -------------------------------------------------------------
+  -- Migration 001 masaları "en eski işletme"ye kuruyordu; işletme kaydı birden
+  -- fazlaysa masalar menüden farklı bir kayda düşüyor ve salon boş görünüyordu.
+  -- Masalar artık menüyle aynı işletmeye kuruluyor.
+  insert into tables (business_id, number, name, sort)
+  select b_id, n, 'Masa ' || n, n
+    from generate_series(1, 10) as n
+  on conflict (business_id, number) do nothing;
 
   -- ---- Personel ------------------------------------------------------------
   if not exists (select 1 from staff where business_id = b_id) then
@@ -162,8 +174,15 @@ begin
       (b_id, 'Glutensiz Ekmek',     75,  8);
   end if;
 
-  raise notice 'La Tía hazır: % — % ürün, % ekstra.',
-    b_id,
-    (select count(*) from menu_items where business_id = b_id),
-    (select count(*) from extras where business_id = b_id);
+  raise notice 'La Tía hazır: %', b_id;
 end $$;
+
+-- Sonucu göster (Supabase editörü NOTICE satırlarını göstermiyor)
+select
+  b.name                                                           as isletme,
+  (select count(*) from categories c where c.business_id = b.id)   as kategori,
+  (select count(*) from menu_items m where m.business_id = b.id)   as urun,
+  (select count(*) from extras     e where e.business_id = b.id)   as ekstra,
+  (select count(*) from tables     t where t.business_id = b.id)   as masa,
+  (select count(*) from staff      s where s.business_id = b.id)   as personel
+from businesses b;

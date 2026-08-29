@@ -71,6 +71,19 @@ export function OrdersTab() {
       </div>
 
       <div style={{ fontSize: 13, fontWeight: 700, color: 'var(--fg2)', textTransform: 'uppercase', letterSpacing: '.8px', margin: '6px 2px 10px' }}>{tr('Masalar')}</div>
+      {/* Masa kaydı yoksa salon bomboş görünüyordu ve sebebi anlaşılmıyordu */}
+      {tables.length === 0 && (
+        <div style={{ background: 'var(--surface)', border: '1px solid var(--line)', borderRadius: 16, padding: '18px 16px', marginBottom: 12 }}>
+          <div style={{ fontSize: 14, fontWeight: 700, color: 'var(--fg)', marginBottom: 6 }}>{tr('Masa tanımlı değil')}</div>
+          <div style={{ fontSize: 12.5, color: 'var(--fg2)', lineHeight: 1.6 }}>
+            {tr('Bu işletmeye hiç masa kurulmamış. Ayarlar’ın en altındaki işletme adını kontrol et — veritabanında birden fazla işletme varsa masalar diğerine kurulmuş olabilir.')}
+            <br />
+            <br />
+            {tr('Bu arada sağ üstteki “+ Yeni” ile isim veya paket adisyonu açabilirsin.')}
+          </div>
+        </div>
+      )}
+
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 10 }}>
         {tables.map((t) => (
           <button
