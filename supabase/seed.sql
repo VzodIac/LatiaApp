@@ -3,11 +3,14 @@
 -- =============================================================================
 -- schema.sql ve migrations/ ÇALIŞTIRILDIKTAN SONRA çalıştırın.
 --
--- ⚠️ MENÜYÜ SIFIRLAR: Bu işletmeye ait hiç sipariş girilmemişse mevcut
---    kategoriler / ürünler / ekstralar silinip aşağıdaki dünya mutfağı
---    şablonu kurulur. Böylece yanlışlıkla yüklenmiş bir menü (ör. Around'un
---    kahvaltı menüsü) tek çalıştırmayla temizlenir.
---    Sipariş girilmişse menüye DOKUNULMAZ — geçmiş veri güvendedir.
+-- ⚠️ MENÜYÜ SIFIRLAR: mevcut kategoriler / ürünler / ekstralar silinip
+--    aşağıdaki dünya mutfağı şablonu kurulur. Yanlışlıkla yüklenmiş bir menü
+--    (ör. Around'un kahvaltı menüsü) tek çalıştırmayla temizlenir.
+--
+--    GEÇMİŞ SİPARİŞLER ETKİLENMEZ: order_items ürün adını, fiyatını ve
+--    maliyetini satış anında dondurur, menu_item_id ise silinince null'a
+--    düşer (on delete set null). Yani menü silinse de ciro ve kâr geçmişi
+--    olduğu gibi kalır.
 --
 -- Ekstra yapısı Around ile aynı mantıkta çalışır, içerik farklıdır:
 --   1) "Ekstra" kategorisi -> tek başına satılabilen yan ürünler (menu_items)
@@ -19,12 +22,28 @@ do $$
 declare
   b_id uuid;
   c_start uuid; c_main uuid; c_extra uuid; c_dessert uuid; c_drink uuid;
-  has_orders boolean;
+  old_items int;
 begin
   -- ---- İşletme -------------------------------------------------------------
+  -- Bu Supabase projesi yalnızca La Tía içindir. Başka bir adla kurulmuş bir
+  -- işletme satırı varsa (ör. Around'un seed'i çalıştırıldıysa) ikinci bir
+  -- işletme yaratmak yanlış olur: uygulama hangisine bağlanacağını bilemez ve
+  -- menü değişiklikleri görünmez. Var olanı yeniden adlandırıyoruz.
   select id into b_id from businesses where name = 'La Tía' limit 1;
   if b_id is null then
-    insert into businesses (name) values ('La Tía') returning id into b_id;
+    select id into b_id from businesses order by created_at limit 1;
+    if b_id is null then
+      insert into businesses (name) values ('La Tía') returning id into b_id;
+      raise notice 'İşletme oluşturuldu.';
+    else
+      update businesses set name = 'La Tía' where id = b_id;
+      raise notice 'Var olan işletme La Tía olarak yeniden adlandırıldı.';
+    end if;
+  end if;
+
+  -- Fazladan işletme satırı kaldıysa uyar (veri silinmez, elle karar verilir)
+  if (select count(*) from businesses) > 1 then
+    raise warning 'Birden fazla işletme satırı var. Uygulama "La Tía" adlısına bağlanır; diğerleri kullanılmıyor.';
   end if;
 
   -- ---- Ayarlar -------------------------------------------------------------
@@ -39,15 +58,16 @@ begin
       (b_id, 'Garson', '5678', 'waiter', 1);
   end if;
 
-  -- ---- Mevcut menüyü temizle (yalnızca sipariş yoksa) -----------------------
-  select exists (select 1 from orders where business_id = b_id) into has_orders;
+  -- ---- Mevcut menüyü temizle -----------------------------------------------
+  -- Sipariş geçmişi bundan etkilenmez (yukarıdaki snapshot açıklamasına bakın).
+  select count(*) into old_items from menu_items where business_id = b_id;
 
-  if has_orders then
-    raise notice 'Sipariş kaydı var — menüye dokunulmadı.';
-  else
-    delete from extras      where business_id = b_id;
-    delete from menu_items  where business_id = b_id;  -- categories FK: restrict
-    delete from categories  where business_id = b_id;
+  delete from extras      where business_id = b_id;
+  delete from menu_items  where business_id = b_id;  -- categories FK: restrict
+  delete from categories  where business_id = b_id;
+
+  if old_items > 0 then
+    raise notice 'Eski menü silindi (% ürün).', old_items;
   end if;
 
   -- ---- Kategoriler ---------------------------------------------------------
@@ -142,5 +162,8 @@ begin
       (b_id, 'Glutensiz Ekmek',     75,  8);
   end if;
 
-  raise notice 'La Tía işletmesi hazır: %', b_id;
+  raise notice 'La Tía hazır: % — % ürün, % ekstra.',
+    b_id,
+    (select count(*) from menu_items where business_id = b_id),
+    (select count(*) from extras where business_id = b_id);
 end $$;

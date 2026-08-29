@@ -40,9 +40,32 @@ export const newId = () =>
 // ---------------------------------------------------------------------------
 let businessId: string | null = null;
 
+/** Bu kurulumun bağlı olduğu işletme */
+export const BUSINESS_NAME = 'La Tía';
+
+/**
+ * Uygulamanın bağlanacağı işletmeyi çözer.
+ *
+ * Önce ada göre aranır: veritabanında yanlışlıkla ikinci bir işletme satırı
+ * oluşursa (ör. başka bir kurulumun seed'i çalıştırıldıysa) "ilk satırı al"
+ * yaklaşımı uygulamayı sessizce yanlış menüye bağlıyordu. Ad bulunamazsa
+ * en eski işletmeye düşülür — tek işletmeli normal kurulumda davranış aynı.
+ */
 export async function loadBusinessId(): Promise<string> {
   if (businessId) return businessId;
-  const { data, error } = await supabase.from('businesses').select('id').limit(1).single();
+
+  const byName = await supabase.from('businesses').select('id').eq('name', BUSINESS_NAME).maybeSingle();
+  if (byName.data) {
+    businessId = byName.data.id as string;
+    return businessId;
+  }
+
+  const { data, error } = await supabase
+    .from('businesses')
+    .select('id')
+    .order('created_at')
+    .limit(1)
+    .single();
   if (error) throw new Error(`İşletme bulunamadı: ${error.message}`);
   businessId = data.id as string;
   return businessId;
