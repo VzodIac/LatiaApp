@@ -46,6 +46,48 @@ update reservations
 
 alter table reservations alter column ends_at set not null;
 
+-- Kısıt konmadan önce var olan çakışmalar temizlenmeli: kural yokken aynı
+-- masaya aynı saate birden fazla rezervasyon girilebiliyordu. Çakışanlardan
+-- EN ESKİSİ korunur, sonrakiler "iptal" işaretlenir — kayıt silinmez, iptal
+-- olanlar masayı işgal etmediği için kısıt geçer. İstemediklerini uygulamadan
+-- tek dokunuşla silebilirsin.
+do $clean$
+declare
+  n int;
+  toplam int := 0;
+begin
+  loop
+    update reservations
+       set status = 'cancelled'
+     where id = (
+       select r.id
+         from reservations r
+        where r.table_no is not null
+          and r.status in ('booked', 'seated')
+          and exists (
+            select 1
+              from reservations o
+             where o.id <> r.id
+               and o.business_id = r.business_id
+               and o.table_no = r.table_no
+               and o.status in ('booked', 'seated')
+               and tstzrange(o.reserved_at, o.ends_at) && tstzrange(r.reserved_at, r.ends_at)
+               and (o.created_at, o.id) < (r.created_at, r.id)
+          )
+        order by r.created_at, r.id
+        limit 1
+     );
+    get diagnostics n = row_count;
+    exit when n = 0;
+    toplam := toplam + n;
+  end loop;
+
+  if toplam > 0 then
+    raise notice 'Çakışan % rezervasyon iptal olarak işaretlendi.', toplam;
+  end if;
+end;
+$clean$;
+
 alter table reservations drop constraint if exists reservations_no_overlap;
 alter table reservations add constraint reservations_no_overlap
   exclude using gist (
